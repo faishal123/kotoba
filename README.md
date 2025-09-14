@@ -50,6 +50,10 @@ Welcome to Kotoba, a web application designed to help you learn Japanese! 🇯�
 
 2.  Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Deployed URL 🌐
+
+You can access the deployed version of Kotoba at [https://kotoba-one.vercel.app/](https://kotoba-one.vercel.app/).
+
 ## Project Structure 📂
 
 The project structure is organized as follows:
