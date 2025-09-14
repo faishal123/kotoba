@@ -1,8 +1,18 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f2f8fb;
+  --foreground: #4b4b4b;
+  --primary: #6db9ce;
+  --white: #fffdfe;
+  --white-secondary: #e9e7e8;
+  --pure-white: #ffffff;
+  --blue-secondary: #03a8d5;
+  --green: #6bc26f;
+  --green-secondary: #a3d9a5;
+  --red: #ff3e50;
+  --red-secondary: #ff8c97;
 }
 
 @theme inline {
@@ -10,12 +20,21 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-blue-secondary: var(--blue-secondary);
+  --color-white: var(--white);
+  --color-white-secondary: var(--white-secondary);
+  --color-pure-white: var(--pure-white);
+  --color-green: var(--green);
+  --color-green-secondary: var(--green-secondary);
+  --color-red: var(--red);
+  --color-red-secondary: var(--red-secondary);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* --background: #0a0a0a;
+    --foreground: #ededed; */
   }
 }
 
@@ -23,4 +42,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@utility button-shadow-* {
+  box-shadow: 0px 4px 0px --value(--color- *);
 }
