@@ -19,7 +19,7 @@ export const QuizFooter = ({
   return (
     <div
       className={cn([
-        show ? "h-[120px] sm:h-[160px] overflow-hidden" : "h-0 overflow-hidden",
+        show ? "h-[120px] sm:h-[160px] overflow-hidden" : "h-0 overflow-hidden border-none",
         "absolute bottom-0 transition-all w-full flex justify-center items-center border-primary border bg-white",
       ])}
     >
