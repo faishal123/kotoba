@@ -1,7 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function Home() {
-  return (
-    <div>
-      New page
-    </div>
-  );
+  return redirect("/hiragana");
 }
