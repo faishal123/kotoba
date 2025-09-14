@@ -6,14 +6,9 @@ import { Card } from "@/components/Atoms/Card/Card";
 import { CardButton } from "@/components/Atoms/CardButton/CardButton";
 import { DialogComponent } from "@/components/Atoms/Dialog/Dialog";
 import Link from "next/link";
-import { BREAKPOINTS, questionCountOptions } from "@/constant/common";
+import { questionCountOptions } from "@/constant/common";
 import { ReactNode, useEffect, useState } from "react";
-import {
-  remToPx,
-  useBreakpointVars,
-  useIsBreaking,
-  useWindowSize,
-} from "@/utils/common";
+import { useIsBreaking } from "@/utils/common";
 import { cn } from "@/lib/utils";
 import { CharacterChoicesMobile } from "../CharacterChoicesMobile/CharacterChoicesMobile";
 

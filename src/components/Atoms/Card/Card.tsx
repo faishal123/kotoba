@@ -5,6 +5,7 @@ const textColorClassNames = {
   default: "text-primary",
   correct: "text-white",
   wrong: "text-white",
+  plain: "text-white",
 };
 
 const variantClassNames = {

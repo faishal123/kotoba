@@ -12,7 +12,7 @@ export default async function Page({
   searchParams,
 }: {
   params: Promise<{ level: string }>;
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { level } = await params;
   const searchParamsResult = await searchParams;
