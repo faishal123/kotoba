@@ -4,7 +4,7 @@ Welcome to Kotoba, a web application designed to help you learn Japanese! 🇯�
 
 ## Features ✨
 
--   **Interactive Quizzes:** Test your knowledge of Hiragana, Katakana, and Kanji with interactive quizzes. 📝
+-   **Interactive Quizzes:** Test your knowledge of Hiragana, Katakana, and Kanji (still under construction) with interactive quizzes. 📝
 -   **Multiple Levels:** Progress through different levels of difficulty to improve your skills. 📈
 -   **Score Tracking:** Keep track of your progress and see how you're improving over time. 📊
 -   **Mobile-Friendly:** Access Kotoba on any device, whether you're on your computer or on the go. 📱
