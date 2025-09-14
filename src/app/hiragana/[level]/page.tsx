@@ -1,4 +1,4 @@
-import { QuizScreen } from "@/components/Page/QuizScreen/HiraganaLevel";
+import { QuizScreen } from "@/components/Page/QuizScreen/QuizScreen";
 import {
   allCharactersLevel,
   hiraganaAndKatakanaLevelChoices,
@@ -40,6 +40,15 @@ export default async function Page({
     charactersToRomaji,
     questionsCount,
   });
+
+  console.log(
+    "sini oi",
+    currentLevel,
+    charactersKey,
+    charactersToRomaji,
+    questionsCount,
+    questionsShuffled
+  );
 
   return (
     <QuizScreen

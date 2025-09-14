@@ -55,5 +55,7 @@ export const generateShuffledQuestions = ({
       };
     });
 
+  questionsShuffled.length = questionsCount;
+
   return questionsShuffled;
 };

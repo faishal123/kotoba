@@ -1,7 +1,10 @@
 "use client";
 import { Header } from "@/components/Molecules/Header/Header";
 import { LevelChoiceLayout } from "@/components/Molecules/Layout/ChooseLevelLayout";
-import { hiraganaAndKatakanaLevelChoices } from "@/constant/common";
+import {
+  allCharactersLevel,
+  hiraganaAndKatakanaLevelChoices,
+} from "@/constant/common";
 
 const katakanaLevelChoices = hiraganaAndKatakanaLevelChoices.map((choice) => ({
   character: choice.characterKatakana,
@@ -10,11 +13,21 @@ const katakanaLevelChoices = hiraganaAndKatakanaLevelChoices.map((choice) => ({
   href: `/katakana/${choice.href}`,
 }));
 
+const allLevel = {
+  character: allCharactersLevel.characterKatakana,
+  name: allCharactersLevel.name,
+  characters: allCharactersLevel.charactersKatakana,
+  href: `/katakana/${allCharactersLevel.href}`,
+};
+
 const KatakanaPage = () => {
   return (
     <>
       <Header />
-      <LevelChoiceLayout choices={katakanaLevelChoices} />
+      <LevelChoiceLayout
+        allCharactersLevel={allLevel}
+        choices={katakanaLevelChoices}
+      />
     </>
   );
 };

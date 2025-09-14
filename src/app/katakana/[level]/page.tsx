@@ -1,4 +1,4 @@
-import { QuizScreen } from "@/components/Page/QuizScreen/HiraganaLevel";
+import { QuizScreen } from "@/components/Page/QuizScreen/QuizScreen";
 import {
   allCharactersLevel,
   hiraganaAndKatakanaLevelChoices,

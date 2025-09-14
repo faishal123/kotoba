@@ -14,27 +14,40 @@ type LevelType = {
   href: string;
 };
 
-export const LevelChoice = ({ level, customTrigger }: { level: LevelType; customTrigger?:ReactNode }) => {
+export const LevelChoice = ({
+  level,
+  customTrigger,
+}: {
+  level: LevelType;
+  customTrigger?: ReactNode;
+}) => {
   const characters = level.characters || [];
+  console.log(characters);
   return (
     <DialogComponent
       title="How many question ?"
-      trigger={customTrigger ||
-        <div className="flex items-center gap-5 cursor-pointer text-foreground hover:text-primary! transition-all">
-          <CardButton omitTextColor size="lg">
-            {level.character}
-          </CardButton>
-          <div className="text-lg max-w-[245px]">
-            <div className="font-bold">{level.name}</div>
-            <div className="truncate w-full">{characters?.join("")}</div>
+      trigger={
+        customTrigger || (
+          <div className="flex items-center gap-5 cursor-pointer text-foreground hover:text-primary! transition-all">
+            <CardButton omitTextColor size="lg">
+              {level.character}
+            </CardButton>
+            <div className="text-lg max-w-[245px]">
+              <div className="font-bold">{level.name}</div>
+              <div className="truncate w-full">{characters?.join("")}</div>
+            </div>
           </div>
-        </div>
+        )
       }
     >
       <div className="flex gap-2 justify-around py-5">
         {questionCountOptions.map((option) => {
           return (
-            <Link className="focus:outline-none" key={option} href={level.href + `?questions=${option}`}>
+            <Link
+              className="focus:outline-none"
+              key={option}
+              href={level.href + `?questions=${option}`}
+            >
               <CardButton key={option}>{option}</CardButton>
             </Link>
           );
@@ -47,16 +60,20 @@ export const LevelChoice = ({ level, customTrigger }: { level: LevelType; custom
 export const LevelChoiceLayout = ({
   children,
   choices,
+  allCharactersLevel,
 }: Readonly<{
   children?: React.ReactNode;
   choices?: LevelType[];
+  allCharactersLevel: LevelType;
 }>) => {
   return (
     <div className="flex p-10 gap-10">
       <div className="flex flex-col gap-5">
         <CharacterChoices />
-        <LevelChoice />
-        <Button label="Surprise Me" variant="secondary" />
+        <LevelChoice
+          level={allCharactersLevel}
+          customTrigger={<Button label="Take All Hiragana Characters Quiz" variant="primary" />}
+        />
       </div>
       <Card className="flex-1 p-10 grid grid-cols-2 gap-5">
         {choices?.map((choice) => {

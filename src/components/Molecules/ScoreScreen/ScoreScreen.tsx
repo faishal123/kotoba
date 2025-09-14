@@ -2,8 +2,18 @@ import { Button } from "@/components/Atoms/Button/Button";
 import { Card } from "@/components/Atoms/Card/Card";
 import Image from "next/image";
 import hiraganaScoreImage from "@/assets/hiragana-score.png";
+import katakanaScoreImage from "@/assets/katakana-score.png";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+
+const defineImage = (homeUrl: string) => {
+  if (homeUrl.includes("katakana")) {
+    return katakanaScoreImage;
+  }
+  if (homeUrl.includes("hiragana")) {
+    return hiraganaScoreImage;
+  }
+};
 
 export const ScoreScreen = ({
   show,
@@ -19,6 +29,8 @@ export const ScoreScreen = ({
   homeUrl: string;
 }) => {
   const router = useRouter();
+
+  const imageToShow = defineImage(homeUrl);
   return (
     <div
       className={cn([
@@ -28,12 +40,14 @@ export const ScoreScreen = ({
       ])}
     >
       <Card className="relative h-[30%] w-[25%] flex flex-col gap-3 items-center justify-center min-w-[250px] min-h-[250px]">
-        <Image
-          className="absolute left-[-20px] top-[-135px]"
-          src={hiraganaScoreImage}
-          alt="hiragana-score"
-          width={350}
-        />
+        {imageToShow && (
+          <Image
+            className="absolute left-[-20px] top-[-135px]"
+            src={imageToShow}
+            alt="hiragana-score"
+            width={350}
+          />
+        )}
         <Card className="shadow-none! p-3 text-foreground">{levelName}</Card>
         <div className="font-bold text-8xl text-foreground">
           {correct}/{totalQuestions}
