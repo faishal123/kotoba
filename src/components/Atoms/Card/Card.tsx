@@ -8,6 +8,7 @@ const textColorClassNames = {
 };
 
 const variantClassNames = {
+  plain: "bg-none border-none shadow-none",
   default: "bg-white button-shadow-primary border-primary",
   correct: "bg-green-secondary button-shadow-green! border-green",
   wrong: "bg-red-secondary button-shadow-red! border-red",
@@ -27,7 +28,7 @@ export const Card = ({
   className?: string;
   role?: "button";
   tabIndex?: number;
-  variant?: "default" | "correct" | "wrong";
+  variant?: "default" | "correct" | "wrong" | "plain";
   omitTextColor?: boolean;
 }) => {
   return (

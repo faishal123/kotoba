@@ -1,6 +1,7 @@
 import { CardButton } from "@/components/Atoms/CardButton/CardButton";
 import { QuestionType } from "@/constant/types";
 import { cn } from "@/lib/utils";
+import { useIsBreaking } from "@/utils/common";
 import { ArrowRight } from "lucide-react";
 
 export const QuizFooter = ({
@@ -14,11 +15,12 @@ export const QuizFooter = ({
   onClick?: () => void;
   currentQuestion?: QuestionType;
 }) => {
+  const { isBreakingSm } = useIsBreaking();
   return (
     <div
       className={cn([
-        show ? "h-[160px] overflow-hidden" : "h-0 overflow-hidden",
-        "absolute bottom-0 transition-all w-full flex justify-center items-center border-primary border bg-white rounded-2xl",
+        show ? "h-[120px] sm:h-[160px] overflow-hidden" : "h-0 overflow-hidden",
+        "absolute bottom-0 transition-all w-full flex justify-center items-center border-primary border bg-white",
       ])}
     >
       {show && (
@@ -26,6 +28,7 @@ export const QuizFooter = ({
           onClick={onClick}
           variant={isAnswerCorrect ? "correct" : "wrong"}
           className="px-5 gap-2"
+          size={isBreakingSm ? "sm" : "md"}
         >
           {isAnswerCorrect ? (
             <div>Continue</div>

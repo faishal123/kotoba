@@ -1,5 +1,12 @@
 import { LevelChoiceType } from "./types";
 
+export enum BREAKPOINTS {
+  xs = "xs",
+  sm = "sm",
+  md = "md",
+  lg = "lg",
+}
+
 export const questionCountOptions = [10, 30, 50];
 
 export const hiraganaToRomaji: Record<string, string> = {

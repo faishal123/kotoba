@@ -1,11 +1,21 @@
+"use client";
+
 import { Button } from "@/components/Atoms/Button/Button";
 import { CharacterChoices } from "../CharacterChoices/CharacterChoices";
 import { Card } from "@/components/Atoms/Card/Card";
 import { CardButton } from "@/components/Atoms/CardButton/CardButton";
 import { DialogComponent } from "@/components/Atoms/Dialog/Dialog";
 import Link from "next/link";
-import { questionCountOptions } from "@/constant/common";
-import { ReactNode } from "react";
+import { BREAKPOINTS, questionCountOptions } from "@/constant/common";
+import { ReactNode, useEffect, useState } from "react";
+import {
+  remToPx,
+  useBreakpointVars,
+  useIsBreaking,
+  useWindowSize,
+} from "@/utils/common";
+import { cn } from "@/lib/utils";
+import { CharacterChoicesMobile } from "../CharacterChoicesMobile/CharacterChoicesMobile";
 
 type LevelType = {
   character: string;
@@ -22,17 +32,17 @@ export const LevelChoice = ({
   customTrigger?: ReactNode;
 }) => {
   const characters = level.characters || [];
-  console.log(characters);
+  const { isBreakingXs } = useIsBreaking();
   return (
     <DialogComponent
       title="How many question ?"
       trigger={
         customTrigger || (
-          <div className="flex items-center gap-5 cursor-pointer text-foreground hover:text-primary! transition-all">
-            <CardButton omitTextColor size="lg">
+          <div className="flex items-center gap-5 cursor-pointer text-foreground hover:text-primary! transition-all sm:w-[395px]">
+            <CardButton omitTextColor size={isBreakingXs ? "sm" : "lg"}>
               {level.character}
             </CardButton>
-            <div className="text-lg max-w-[245px]">
+            <div className={cn(["w-[150px] xs:w-[245px] text-sm xs:text-lg"])}>
               <div className="font-bold">{level.name}</div>
               <div className="truncate w-full">{characters?.join("")}</div>
             </div>
@@ -57,30 +67,51 @@ export const LevelChoice = ({
   );
 };
 
-export const LevelChoiceLayout = ({
-  children,
+export const ChooseLevelLayout = ({
   choices,
   allCharactersLevel,
 }: Readonly<{
-  children?: React.ReactNode;
   choices?: LevelType[];
   allCharactersLevel: LevelType;
 }>) => {
+  const [rendered, setRendered] = useState(false);
+  useEffect(() => {
+    setRendered(true);
+  }, []);
+  const { isBreakingXs } = useIsBreaking();
+
+  if (!rendered) {
+    return null;
+  }
+
   return (
-    <div className="flex p-10 gap-10">
-      <div className="flex flex-col gap-5">
+    <div className="relative flex p-10 gap-0 sm:gap-10 transition-all">
+      <div className="flex flex-col gap-5 w-0 transition-all overflow-hidden sm:w-[250px]">
         <CharacterChoices />
         <LevelChoice
           level={allCharactersLevel}
-          customTrigger={<Button label="Take All Hiragana Characters Quiz" variant="primary" />}
+          customTrigger={
+            <Button
+              className="w-[250px]"
+              label={`Take All ${
+                allCharactersLevel.href.includes("katakana")
+                  ? "Katakana"
+                  : "Hiragana"
+              } Characters Quiz`}
+              variant="primary"
+            />
+          }
         />
       </div>
-      <Card className="flex-1 p-10 grid grid-cols-2 gap-5">
+      <Card
+        variant={isBreakingXs ? "plain" : "default"}
+        className="p-0 xs:p-10 flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center"
+      >
         {choices?.map((choice) => {
           return <LevelChoice level={choice} key={choice.name} />;
         })}
-        {children}
       </Card>
+      <CharacterChoicesMobile />
     </div>
   );
 };

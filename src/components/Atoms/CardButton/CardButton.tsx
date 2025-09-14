@@ -2,6 +2,12 @@ import { ReactNode } from "react";
 import { Card } from "../Card/Card";
 import { cn } from "@/lib/utils";
 
+const sizeClassName = {
+  sm: "min-w-[60px] min-h-[60px] text-2xl",
+  md: "min-w-[80px] min-h-[80px] text-3xl",
+  lg: "min-w-[120px] min-h-[120px] text-5xl",
+};
+
 export const CardButton = ({
   children,
   onClick,
@@ -13,7 +19,7 @@ export const CardButton = ({
   className?: string;
   children?: ReactNode;
   onClick?: () => void;
-  size?: "md" | "lg";
+  size?: "sm" | "md" | "lg";
   variant?: "default" | "correct" | "wrong";
   omitTextColor?: boolean;
 }) => {
@@ -26,9 +32,7 @@ export const CardButton = ({
       role="button"
       className={cn([
         "cursor-pointer flex items-center font-bold justify-center focus:outline-none",
-        size === "md"
-          ? "min-w-[80px] min-h-[80px] text-3xl"
-          : "min-w-[120px] min-h-[120px] text-5xl",
+        sizeClassName[size],
         className,
       ])}
     >

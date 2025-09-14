@@ -5,7 +5,7 @@ import {
   hiraganaToRomaji,
   questionCountOptions,
 } from "@/constant/common";
-import { generateShuffledQuestions } from "@/utils/common";
+import { generateShuffledQuestions } from "@/utils/questions";
 
 export default async function Page({
   params,

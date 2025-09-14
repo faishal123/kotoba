@@ -1,6 +1,6 @@
 "use client";
 import { Header } from "@/components/Molecules/Header/Header";
-import { LevelChoiceLayout } from "@/components/Molecules/Layout/ChooseLevelLayout";
+import { ChooseLevelLayout } from "@/components/Molecules/Layout/ChooseLevelLayout";
 import {
   allCharactersLevel,
   hiraganaAndKatakanaLevelChoices,
@@ -24,7 +24,7 @@ const KatakanaPage = () => {
   return (
     <>
       <Header />
-      <LevelChoiceLayout
+      <ChooseLevelLayout
         allCharactersLevel={allLevel}
         choices={katakanaLevelChoices}
       />

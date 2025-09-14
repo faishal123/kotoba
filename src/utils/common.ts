@@ -1,61 +1,88 @@
-import { LevelChoiceType } from "@/constant/types";
+"use client";
 
-export const generateShuffledQuestions = ({
-  currentLevel,
-  charactersKey,
-  charactersToRomaji,
-  questionsCount,
-}: {
-  currentLevel?: LevelChoiceType;
-  charactersKey: "charactersHiragana" | "charactersKatakana";
-  charactersToRomaji: Record<string, string>;
-  questionsCount: number;
-}) => {
-  const currentLevelCharacters = currentLevel?.[charactersKey] || [];
-  const currentLevelCharactersLength = currentLevelCharacters.length;
-  const possibleAnswers = currentLevelCharacters.map((char) => {
-    return charactersToRomaji[char];
+import { useState, useEffect } from "react";
+
+export function useWindowSize() {
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0,
   });
 
-  const multiplyFactor = Math.ceil(
-    questionsCount / currentLevelCharactersLength
-  );
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
 
-  const questions = Array.from(Array(multiplyFactor).keys()).flatMap(() => {
-    return currentLevelCharacters;
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Set initial size
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return windowSize;
+}
+
+export function remToPx(rem: string): number {
+  const remValue = parseFloat(rem);
+  if (isNaN(remValue)) {
+    return 0;
+  }
+  const rootFontSize =
+    typeof window !== "undefined"
+      ? parseFloat(getComputedStyle(document.documentElement).fontSize)
+      : 16; // fallback for SSR
+  return remValue * rootFontSize;
+}
+
+export function useBreakpointVars() {
+  const [breakpoints, setBreakpoints] = useState({
+    lg: "",
+    md: "",
+    sm: "",
+    xs: "",
   });
 
-  const questionsShuffled = questions
-    .map((value) => ({ value }))
-    .sort(() => 0.5 - Math.random())
-    .map(({ value }) => {
-      const correctAnswer = charactersToRomaji[value];
-      const wrongAnswers = possibleAnswers
-        .filter((answer) => answer !== correctAnswer)
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 2);
-
-      const answers = [
-        {
-          answer: correctAnswer,
-          isCorrect: true,
-        },
-        ...wrongAnswers.map((answer) => {
-          return {
-            answer: answer,
-            isCorrect: false,
-          };
-        }),
-      ]
-        .map((value) => value)
-        .sort(() => 0.5 - Math.random());
-      return {
-        question: value,
-        answers: answers,
-      };
+  useEffect(() => {
+    const style = getComputedStyle(document.documentElement);
+    setBreakpoints({
+      lg: style.getPropertyValue("--breakpoint-lg").trim(),
+      md: style.getPropertyValue("--breakpoint-md").trim(),
+      sm: style.getPropertyValue("--breakpoint-sm").trim(),
+      xs: style.getPropertyValue("--breakpoint-xs").trim(),
     });
+  }, []);
 
-  questionsShuffled.length = questionsCount;
+  return {
+    lg: remToPx(breakpoints.lg),
+    md: remToPx(breakpoints.md),
+    sm: remToPx(breakpoints.sm),
+    xs: remToPx(breakpoints.xs),
+  };
+}
 
-  return questionsShuffled;
+export const useIsBreaking = () => {
+  const { width } = useWindowSize();
+  const { xs, sm, md, lg } = useBreakpointVars();
+
+  const isBreaking = {
+    isBreakingSm: false,
+    isBreakingMd: false,
+    isBreakingLg: false,
+    isBreakingXs: false,
+  };
+
+  if (width < xs) {
+    isBreaking.isBreakingXs = true;
+  } else if (width < sm) {
+    isBreaking.isBreakingSm = true;
+  } else if (width < md) {
+    isBreaking.isBreakingMd = true;
+  } else if (width < lg) {
+    isBreaking.isBreakingLg = true;
+  }
+
+  return isBreaking;
 };
