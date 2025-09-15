@@ -5,7 +5,7 @@ import { Button } from "@/components/Atoms/Button/Button";
 
 export default function Page() {
   return (
-    <div className="flex flex-col justify-center items-center h-screen w-screen">
+    <div className="flex flex-col justify-center items-center h-[100svh] w-screen">
       <Image width={100} alt="Kanji" src={kanjiMascot} />
       <div className="text-center text-lg font-bold mb-5">
         <div>This page is still under construction</div>

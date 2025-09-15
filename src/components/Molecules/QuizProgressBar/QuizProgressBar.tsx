@@ -28,7 +28,7 @@ export const QuizProgressBar = ({
         <div className="text-white font-bold text-lg">
           {currentQuestion}/{totalQuestions}
         </div>
-        <div className="right-0 p-5 bg-white size-5 rounded-full flex justify-center items-center absolute">⭐</div>
+        {/* <div className="right-0 p-5 bg-white size-5 rounded-full flex justify-center items-center absolute">⭐</div> */}
         <div className="flex-1 overflow-hidden h-4 rounded-full bg-white">
           <div
             style={{

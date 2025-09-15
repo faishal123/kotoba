@@ -277,7 +277,7 @@ export const hiraganaAndKatakanaLevelChoices: LevelChoiceType[] = [
   {
     characterKatakana: "カ",
     characterHiragana: "か",
-    name: `"Ga" Set Characters`,
+    name: `"Ka" Set Characters`,
     charactersHiragana: ["か", "き", "く", "け", "こ"],
     charactersKatakana: ["カ", "キ", "ク", "ケ", "コ"],
     href: "ka-set",

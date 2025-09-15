@@ -34,12 +34,12 @@ export const ScoreScreen = ({
   return (
     <div
       className={cn([
-        "absolute duration-[500ms] transition-all overflow-hidden h-screen bg-primary right-0",
+        "absolute duration-[500ms] transition-all overflow-hidden h-[100svh] bg-primary right-0",
         show ? "w-screen" : "w-0",
         "flex justify-center flex-col gap-5 items-center",
       ])}
     >
-      <Card className="relative h-[30%] w-[25%] flex flex-col gap-3 items-center justify-center min-w-[250px] min-h-[250px]">
+      <Card className="p-5 relative flex flex-col gap-3 items-center justify-center min-w-[250px] min-h-[250px]">
         {imageToShow && (
           <Image
             className="absolute left-[-20px] top-[-135px]"
@@ -49,7 +49,7 @@ export const ScoreScreen = ({
           />
         )}
         <Card className="shadow-none! p-3 text-foreground">{levelName}</Card>
-        <div className="font-bold text-8xl text-foreground">
+        <div className="font-bold text-6xl xs:text-8xl text-foreground">
           {correct}/{totalQuestions}
         </div>
       </Card>

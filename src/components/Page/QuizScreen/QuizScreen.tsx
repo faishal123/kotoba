@@ -40,7 +40,7 @@ export const QuizScreen = ({
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <div className={cn(["relative transition-all flex flex-col h-screen"])}>
+    <div className={cn(["relative transition-all flex flex-col h-[100svh]"])}>
       <QuizProgressBar
         totalQuestions={questions.length}
         currentQuestionIndex={currentQuestionIndex}
@@ -49,8 +49,10 @@ export const QuizScreen = ({
         homeUrl={homeUrl}
         levelName={levelName}
         correct={correct}
+        // correct={10}
         totalQuestions={questions.length}
         show={!currentQuestion}
+        // show
       />
       {currentQuestion && (
         <div className="flex-1 flex flex-col gap-10 items-center justify-center">

@@ -15,12 +15,14 @@ export const QuizFooter = ({
   onClick?: () => void;
   currentQuestion?: QuestionType;
 }) => {
-  const { isBreakingSm } = useIsBreaking();
+  const { isBreakingXs, isBreakingSm } = useIsBreaking();
   return (
     <div
       className={cn([
-        show ? "h-[120px] sm:h-[160px] overflow-hidden" : "h-0 overflow-hidden border-none",
-        "absolute bottom-0 transition-all w-full flex justify-center items-center border-primary border bg-white",
+        show
+          ? "h-[100px] sm:h-[120px] overflow-hidden"
+          : "h-0 overflow-hidden border-none",
+        "fixed bottom-0 transition-all w-full flex justify-center items-center border-primary border bg-white",
       ])}
     >
       {show && (
@@ -28,7 +30,7 @@ export const QuizFooter = ({
           onClick={onClick}
           variant={isAnswerCorrect ? "correct" : "wrong"}
           className="px-5 gap-2"
-          size={isBreakingSm ? "sm" : "md"}
+          size={isBreakingXs ? "xs" : isBreakingSm ? "sm" : "sm"}
         >
           {isAnswerCorrect ? (
             <div>Continue</div>
@@ -41,7 +43,7 @@ export const QuizFooter = ({
               &quot;
             </div>
           )}
-          <ArrowRight height={40} width={40} />
+          <ArrowRight className="xs:size-8 md:size-10" />
         </CardButton>
       )}
     </div>
