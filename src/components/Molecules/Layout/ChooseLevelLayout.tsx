@@ -62,6 +62,31 @@ export const LevelChoice = ({
   );
 };
 
+const AllCharactersLevelButton = ({
+  className,
+  allCharactersLevel,
+}: Readonly<{
+  className?: string;
+  allCharactersLevel: LevelType;
+}>) => {
+  return (
+    <LevelChoice
+      level={allCharactersLevel}
+      customTrigger={
+        <Button
+          className={className}
+          label={`Take All ${
+            allCharactersLevel.href.includes("katakana")
+              ? "Katakana"
+              : "Hiragana"
+          } Characters Quiz`}
+          variant="primary"
+        />
+      }
+    />
+  );
+};
+
 export const ChooseLevelLayout = ({
   choices,
   allCharactersLevel,
@@ -73,7 +98,7 @@ export const ChooseLevelLayout = ({
   useEffect(() => {
     setRendered(true);
   }, []);
-  const { isBreakingXs } = useIsBreaking();
+  const { isBreakingXs, isBreakingSm } = useIsBreaking();
 
   if (!rendered) {
     return null;
@@ -83,25 +108,21 @@ export const ChooseLevelLayout = ({
     <div className="relative flex pb-[calc(40px+126px)] sm:pb-10 p-10 gap-0 sm:gap-10 transition-all">
       <div className="flex flex-col gap-5 w-0 transition-all overflow-hidden sm:w-[250px]">
         <CharacterChoices />
-        <LevelChoice
-          level={allCharactersLevel}
-          customTrigger={
-            <Button
-              className="w-[250px]"
-              label={`Take All ${
-                allCharactersLevel.href.includes("katakana")
-                  ? "Katakana"
-                  : "Hiragana"
-              } Characters Quiz`}
-              variant="primary"
-            />
-          }
+        <AllCharactersLevelButton
+          allCharactersLevel={allCharactersLevel}
+          className="w-[250px]"
         />
       </div>
       <Card
         variant={isBreakingXs ? "plain" : "default"}
         className="p-0 xs:p-10 flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center"
       >
+        {(isBreakingSm || isBreakingXs) && (
+          <AllCharactersLevelButton
+            allCharactersLevel={allCharactersLevel}
+            className="w-[230px] xs:w-[395px]"
+          />
+        )}
         {choices?.map((choice) => {
           return <LevelChoice level={choice} key={choice.name} />;
         })}
