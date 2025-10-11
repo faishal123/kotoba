@@ -1,6 +1,4 @@
-import { Button } from "@/components/Atoms/Button/Button";
-import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { HeaderBackButton } from "../Header/BackButton";
 
 export const QuizProgressBar = ({
   totalQuestions,
@@ -9,8 +7,6 @@ export const QuizProgressBar = ({
   totalQuestions: number;
   currentQuestionIndex: number;
 }) => {
-  const router = useRouter();
-
   let currentQuestion = currentQuestionIndex;
   if (currentQuestion > totalQuestions) {
     currentQuestion = totalQuestions;
@@ -18,12 +14,7 @@ export const QuizProgressBar = ({
 
   return (
     <div className="bg-primary gap-10 p-10 flex justify-between items-center absolute top-0 w-screen">
-      <Button
-        onClick={() => router.back()}
-        label={<ArrowLeft width={30} height={30} />}
-        className="p-0 size-12 rounded-full flex justify-center items-center"
-        variant="secondary"
-      />
+      <HeaderBackButton />
       <div className="relative flex flex-1 items-center gap-2">
         <div className="text-white font-bold text-lg">
           {currentQuestion}/{totalQuestions}

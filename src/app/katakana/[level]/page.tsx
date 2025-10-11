@@ -1,10 +1,7 @@
 import { QuizScreen } from "@/components/Page/QuizScreen/QuizScreen";
-import {
-  allCharactersLevel,
-  hiraganaAndKatakanaLevelChoices,
-  katakanaToRomaji,
-  questionCountOptions,
-} from "@/constant/common";
+import { allCharactersLevel, questionCountOptions } from "@/constant/common";
+import { hiraganaAndKatakanaLevelChoices } from "@/constant/hiraganaAndKatakanaLevelChoices";
+import { katakanaToRomaji } from "@/constant/katakanaToRomaji";
 import { generateShuffledQuestions } from "@/utils/questions";
 
 export default async function Page({

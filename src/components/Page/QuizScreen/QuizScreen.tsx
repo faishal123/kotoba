@@ -3,9 +3,10 @@ import { useState } from "react";
 import { CardButton } from "@/components/Atoms/CardButton/CardButton";
 import { cn } from "@/lib/utils";
 import { QuizFooter } from "@/components/Molecules/QuizFooter/QuizFooter";
-import { QuestionType } from "@/constant/types";
+import { AnswerType, QuestionType } from "@/constant/types";
 import { ScoreScreen } from "@/components/Molecules/ScoreScreen/ScoreScreen";
 import { QuizProgressBar } from "@/components/Molecules/QuizProgressBar/QuizProgressBar";
+import { Card } from "@/components/Atoms/Card/Card";
 
 export const QuizScreen = ({
   questions,
@@ -39,6 +40,17 @@ export const QuizScreen = ({
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  const onClickAnswer = (answer: AnswerType, i: number) => {
+    setState((prev) => ({
+      ...prev,
+      currentQuestionAnswered: true,
+      chosenAnswerIndex: i,
+      ...(answer.isCorrect
+        ? { correct: prev.correct + 1 }
+        : { wrong: prev.wrong + 1 }),
+    }));
+  };
+
   return (
     <div className={cn(["relative transition-all flex flex-col h-[100svh]"])}>
       <QuizProgressBar
@@ -49,20 +61,19 @@ export const QuizScreen = ({
         homeUrl={homeUrl}
         levelName={levelName}
         correct={correct}
-        // correct={10}
         totalQuestions={questions.length}
         show={!currentQuestion}
-        // show
       />
       {currentQuestion && (
         <div className="flex-1 flex flex-col gap-10 items-center justify-center">
-          <div className="w-[195px] h-[230px] flex items-center justify-center bg-white border border-primary rounded-2xl text-8xl font-bold">
+          <Card className="min-w-[195px] min-h-[230px] p-5 flex items-center justify-center text-8xl font-bold text-foreground">
             {currentQuestion?.question}
-          </div>
+          </Card>
           <div className="flex gap-5">
             {currentQuestion?.answers.map((answer, i) => {
               return (
                 <CardButton
+                  className="px-2"
                   variant={
                     currentQuestionAnswered && i === chosenAnswerIndex
                       ? answer.isCorrect
@@ -74,14 +85,7 @@ export const QuizScreen = ({
                     currentQuestionAnswered
                       ? undefined
                       : () => {
-                          setState((prev) => ({
-                            ...prev,
-                            currentQuestionAnswered: true,
-                            chosenAnswerIndex: i,
-                            ...(answer.isCorrect
-                              ? { correct: prev.correct + 1 }
-                              : { wrong: prev.wrong + 1 }),
-                          }));
+                          onClickAnswer(answer, i);
                         }
                   }
                   key={`${currentQuestionIndex} ${answer.answer}`}

@@ -1,31 +1,19 @@
 import { Card } from "@/components/Atoms/Card/Card";
+import { characterChoices } from "@/constant/characterChoices";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const choices = [
-  {
-    href: "/hiragana",
-    label: "Hiragana",
-    character: "あ",
-  },
-  {
-    href: "/katakana",
-    label: "Katakana",
-    character: "ア",
-  },
-  {
-    href: "/kanji",
-    label: "Kanji",
-    character: "字",
-  },
-];
-
-export const CharacterChoices = () => {
+export const CharacterChoices = ({ className }: { className?: string }) => {
   const pathname = usePathname();
   return (
-    <Card className="p-10 flex flex-col text-left align-left items-center gap-10">
-      {choices.map((choice) => {
+    <Card
+      className={cn([
+        "p-10 flex flex-col text-left align-left items-center gap-10",
+        className,
+      ])}
+    >
+      {characterChoices.map((choice) => {
         const isActive = pathname === choice.href;
         return (
           <Link

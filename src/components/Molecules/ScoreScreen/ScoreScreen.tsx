@@ -13,6 +13,7 @@ const defineImage = (homeUrl: string) => {
   if (homeUrl.includes("hiragana")) {
     return hiraganaScoreImage;
   }
+  return hiraganaScoreImage;
 };
 
 export const ScoreScreen = ({

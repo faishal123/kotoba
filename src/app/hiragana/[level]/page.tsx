@@ -1,10 +1,7 @@
 import { QuizScreen } from "@/components/Page/QuizScreen/QuizScreen";
-import {
-  allCharactersLevel,
-  hiraganaAndKatakanaLevelChoices,
-  hiraganaToRomaji,
-  questionCountOptions,
-} from "@/constant/common";
+import { allCharactersLevel, questionCountOptions } from "@/constant/common";
+import { hiraganaAndKatakanaLevelChoices } from "@/constant/hiraganaAndKatakanaLevelChoices";
+import { hiraganaToRomaji } from "@/constant/hiraganaToRomaji";
 import { generateShuffledQuestions } from "@/utils/questions";
 
 export default async function Page({
@@ -40,15 +37,6 @@ export default async function Page({
     charactersToRomaji,
     questionsCount,
   });
-
-  console.log(
-    "sini oi",
-    currentLevel,
-    charactersKey,
-    charactersToRomaji,
-    questionsCount,
-    questionsShuffled
-  );
 
   return (
     <QuizScreen

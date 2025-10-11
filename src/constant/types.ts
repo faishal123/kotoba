@@ -1,9 +1,11 @@
+export type AnswerType = {
+  answer: string;
+  isCorrect: boolean;
+};
+
 export type QuestionType = {
   question: string;
-  answers: {
-    answer: string;
-    isCorrect: boolean;
-  }[];
+  answers: AnswerType[];
 };
 
 export type LevelChoiceType = {

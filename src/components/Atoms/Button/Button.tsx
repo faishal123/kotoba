@@ -6,9 +6,9 @@ const baseButtonClassName =
 
 const buttonVariantClassNames = {
   primary:
-    "bg-primary text-white border-blue-secondary button-shadow-blue-secondary",
+    "bg-primary text-white border-blue-secondary button-shadow-blue-secondary hover:bg-primary/90 transition-all",
   secondary:
-    "bg-white text-primary border-white-secondary button-shadow-white-secondary",
+    "bg-white text-primary border-white-secondary button-shadow-white-secondary hover:bg-white/90 transition-all",
   answerChoice: "bg-green-500 text-white hover:bg-green-600",
 };
 

@@ -17,6 +17,7 @@ type LevelType = {
   name: string;
   characters?: string[];
   href: string;
+  description?: string;
 };
 
 export const LevelChoice = ({
@@ -32,17 +33,30 @@ export const LevelChoice = ({
     <DialogComponent
       title="How many question ?"
       trigger={
-        customTrigger || (
+        customTrigger ||
+        (isBreakingXs ? (
+          <Card className="flex gap-5 p-5 w-full text-foreground items-center">
+            <div className="font-bold text-3xl min-w-[60px] text-center">
+              {level.character}
+            </div>
+            <div className="flex-1 max-w-[calc(100vw-80px-40px-20px-60px)]">
+              <div className="font-bold">{level.name}</div>
+              <div>{characters?.join("") || level.description}</div>
+            </div>
+          </Card>
+        ) : (
           <div className="flex items-center gap-5 cursor-pointer text-foreground hover:text-primary! transition-all sm:w-[395px]">
             <CardButton omitTextColor size={isBreakingXs ? "sm" : "lg"}>
               {level.character}
             </CardButton>
             <div className={cn(["w-[150px] xs:w-[245px] text-sm xs:text-lg"])}>
               <div className="font-bold">{level.name}</div>
-              <div className="truncate w-full">{characters?.join("")}</div>
+              <div className="truncate w-full">
+                {characters?.join("") || level.description}
+              </div>
             </div>
           </div>
-        )
+        ))
       }
     >
       <div className="flex gap-2 justify-around py-5">
@@ -107,11 +121,11 @@ export const ChooseLevelLayout = ({
   return (
     <div className="relative flex pb-[calc(40px+126px)] sm:pb-10 p-10 gap-0 sm:gap-10 transition-all">
       <div className="flex flex-col gap-5 w-0 transition-all overflow-hidden sm:w-[250px]">
-        <CharacterChoices />
         <AllCharactersLevelButton
           allCharactersLevel={allCharactersLevel}
           className="w-[250px]"
         />
+        <CharacterChoices />
       </div>
       <Card
         variant={isBreakingXs ? "plain" : "default"}

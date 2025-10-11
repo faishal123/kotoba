@@ -1,10 +1,8 @@
 "use client";
 import { Header } from "@/components/Molecules/Header/Header";
 import { ChooseLevelLayout } from "@/components/Molecules/Layout/ChooseLevelLayout";
-import {
-  allCharactersLevel,
-  hiraganaAndKatakanaLevelChoices,
-} from "@/constant/common";
+import { allCharactersLevel } from "@/constant/common";
+import { hiraganaAndKatakanaLevelChoices } from "@/constant/hiraganaAndKatakanaLevelChoices";
 
 const katakanaLevelChoices = hiraganaAndKatakanaLevelChoices.map((choice) => ({
   character: choice.characterKatakana,

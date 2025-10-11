@@ -1,4 +1,5 @@
 import { LevelChoiceType } from "@/constant/types";
+import { randomizeArray } from "./serverUtils";
 
 export const generateShuffledQuestions = ({
   currentLevel,
@@ -25,35 +26,34 @@ export const generateShuffledQuestions = ({
     return currentLevelCharacters;
   });
 
-  const questionsShuffled = questions
-    .map((value) => ({ value }))
-    .sort(() => 0.5 - Math.random())
-    .map(({ value }) => {
-      const correctAnswer = charactersToRomaji[value];
-      const wrongAnswers = possibleAnswers
-        .filter((answer) => answer !== correctAnswer)
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 2);
+  const questionsShuffled = randomizeArray(
+    questions.map((value) => ({ value }))
+  ).map(({ value }) => {
+    const correctAnswer = charactersToRomaji[value];
+    const wrongAnswers = possibleAnswers
+      .filter((answer) => answer !== correctAnswer)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 2);
 
-      const answers = [
-        {
-          answer: correctAnswer,
-          isCorrect: true,
-        },
-        ...wrongAnswers.map((answer) => {
-          return {
-            answer: answer,
-            isCorrect: false,
-          };
-        }),
-      ]
-        .map((value) => value)
-        .sort(() => 0.5 - Math.random());
-      return {
-        question: value,
-        answers: answers,
-      };
-    });
+    const answers = [
+      {
+        answer: correctAnswer,
+        isCorrect: true,
+      },
+      ...wrongAnswers.map((answer) => {
+        return {
+          answer: answer,
+          isCorrect: false,
+        };
+      }),
+    ]
+      .map((value) => value)
+      .sort(() => 0.5 - Math.random());
+    return {
+      question: value,
+      answers: answers,
+    };
+  });
 
   questionsShuffled.length = questionsCount;
 

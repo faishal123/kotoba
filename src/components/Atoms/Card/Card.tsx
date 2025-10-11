@@ -38,7 +38,7 @@ export const Card = ({
       tabIndex={tabIndex}
       onClick={onClick}
       className={cn([
-        "border rounded-2xl transition-all focus:outline-none",
+        "border rounded-2xl focus:outline-none",
         variantClassNames[variant],
         !omitTextColor && textColorClassNames[variant],
         className,
