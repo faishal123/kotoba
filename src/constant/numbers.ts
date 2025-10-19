@@ -180,7 +180,7 @@ export const numbers = [
     ],
   },
   {
-    romaji: "1000",
+    romaji: "1k",
     kanji: [
       {
         text: "千",
@@ -194,7 +194,7 @@ export const numbers = [
     ],
   },
   {
-    romaji: "10000",
+    romaji: "10k",
     kanji: [
       {
         text: "万",
@@ -204,6 +204,48 @@ export const numbers = [
       {
         text: "まん",
         appliesToKanji: ["万"],
+      },
+    ],
+  },
+  {
+    romaji: "100mil",
+    kanji: [
+      {
+        text: "億",
+      },
+    ],
+    kana: [
+      {
+        text: "おく",
+        appliesToKanji: ["億"],
+      },
+    ],
+  },
+  {
+    romaji: "1tril",
+    kanji: [
+      {
+        text: "兆",
+      },
+    ],
+    kana: [
+      {
+        text: "ちょう",
+        appliesToKanji: ["兆"],
+      },
+    ],
+  },
+  {
+    romaji: "10quadril",
+    kanji: [
+      {
+        text: "京",
+      },
+    ],
+    kana: [
+      {
+        text: "けい",
+        appliesToKanji: ["京"],
       },
     ],
   },
