@@ -23,6 +23,12 @@ export const characterChoices = [
     href: "/levels/number",
     label: "Number",
     character: "五",
-    description: "Practice Japanese numbers and counting.",
+    description: "Practice Japanese numbers.",
+  },
+  {
+    href: "/quiz/occupation",
+    label: "Occupation",
+    character: "仕事",
+    description: "Practice Japanese occupation vocabulary.",
   },
 ];

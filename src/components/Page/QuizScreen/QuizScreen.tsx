@@ -12,10 +12,18 @@ export const QuizScreen = ({
   questions,
   levelName,
   homeUrl,
+  questionClassName,
+  answersContainerClassName,
+  answerClassName,
+  containerClassName,
 }: {
   questions: QuestionType[];
   levelName: string;
   homeUrl: string;
+  questionClassName?: string;
+  answersContainerClassName?: string;
+  answerClassName?: string;
+  containerClassName?: string;
 }) => {
   const [state, setState] = useState<{
     correct: number;
@@ -65,15 +73,25 @@ export const QuizScreen = ({
         show={!currentQuestion}
       />
       {currentQuestion && (
-        <div className="flex-1 flex flex-col gap-10 items-center justify-center">
-          <Card className="min-w-[195px] min-h-[230px] p-5 flex items-center justify-center text-8xl font-bold text-foreground">
+        <div
+          className={cn([
+            "flex-1 flex flex-col gap-10 items-center justify-center",
+            containerClassName,
+          ])}
+        >
+          <Card
+            className={cn([
+              "min-w-[195px] min-h-[230px] p-5 flex items-center justify-center text-8xl font-bold text-foreground",
+              questionClassName,
+            ])}
+          >
             {currentQuestion?.question}
           </Card>
-          <div className="flex gap-5">
+          <div className={cn(["flex gap-5", answersContainerClassName])}>
             {currentQuestion?.answers.map((answer, i) => {
               return (
                 <CardButton
-                  className="px-2"
+                  className={cn(["px-2", answerClassName])}
                   variant={
                     currentQuestionAnswered && i === chosenAnswerIndex
                       ? answer.isCorrect

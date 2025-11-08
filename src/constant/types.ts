@@ -1,10 +1,14 @@
+import { ReactNode } from "react";
+
 export type AnswerType = {
   answer: string;
   isCorrect: boolean;
 };
 
+type KanjiQuestionType = ReactNode;
+
 export type QuestionType = {
-  question: string;
+  question: string | KanjiQuestionType;
   answers: AnswerType[];
 };
 
