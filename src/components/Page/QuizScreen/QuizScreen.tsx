@@ -91,7 +91,7 @@ export const QuizScreen = ({
             {currentQuestion?.answers.map((answer, i) => {
               return (
                 <CardButton
-                  className={cn(["px-2", answerClassName])}
+                  className={cn(["px-2 text-center", answerClassName])}
                   variant={
                     currentQuestionAnswered && i === chosenAnswerIndex
                       ? answer.isCorrect

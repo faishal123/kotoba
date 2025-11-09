@@ -1,21 +1,32 @@
 import { QuizScreen } from "@/components/Page/QuizScreen/QuizScreen";
 import { occupations } from "@/constant/minna-no-nihongo";
 import { QuestionType } from "@/constant/types";
-import { generateRandomNumber, randomizeArray } from "@/utils/serverUtils";
+import {
+  generateRandomNumber,
+  randomizeArray,
+  removeDuplicates,
+} from "@/utils/serverUtils";
 
 export default function Page() {
-  const possibleAnswers = occupations.map((occ) => occ.meaning);
+  const possibleAnswers = removeDuplicates(
+    occupations.flatMap((occ) => occ.indonesian_translation_options)
+  );
   const questions = randomizeArray(occupations).reduce<QuestionType[]>(
     (a, c) => {
-      const question = (
+      const question = c.kanji ? (
         <ruby>
           {c.kanji}
           <rt>{c.furigana}</rt>
         </ruby>
+      ) : (
+        c.furigana
       );
-      const correctAnswer = c.meaning;
+
+      const correctAnswerArray = c.indonesian_translation_options;
+      const correctAnswer = randomizeArray(correctAnswerArray)[0];
+
       const possibleWrongAnswers = possibleAnswers.filter(
-        (a) => a !== correctAnswer
+        (a) => !correctAnswerArray.includes(a)
       );
       const firstWrongAnswerIndex = generateRandomNumber(
         0,
