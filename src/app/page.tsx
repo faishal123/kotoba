@@ -1,11 +1,17 @@
-"use client";
-
 import { Card } from "@/components/Atoms/Card/Card";
 import { Header } from "@/components/Molecules/Header/Header";
 import { characterChoices } from "@/constant/characterChoices";
 import Link from "next/link";
+import { getAllData, SupabaseAvailableQuizViewType } from "@/utils/supabase";
+import { MixQuizSelector } from "@/components/Molecules/MixQuizSelector/MixQuizSelector";
 
-export default function Home() {
+export default async function Home() {
+  const allQuiz = await getAllData("kotoba_quiz_available_list");
+
+  const quizWithQuestions: SupabaseAvailableQuizViewType[] | undefined =
+    allQuiz?.filter((quiz) => quiz.question_count > 0);
+
+  console.log("all quiz", allQuiz, quizWithQuestions);
   return (
     <>
       <Header
@@ -17,7 +23,7 @@ export default function Home() {
         {characterChoices.map((choice) => (
           <Link key={choice.href} href={choice.href}>
             <Card className="w-full h-full p-5 flex gap-5 items-center">
-              <div className="text-4xl font-bold">{choice.character}</div>
+              {/* <div className="text-4xl font-bold">{choice.character}</div> */}
               <div>
                 <div className="text-lg font-bold">{choice.label}</div>
                 <div className="text-lg">{choice.description}</div>
@@ -25,6 +31,7 @@ export default function Home() {
             </Card>
           </Link>
         ))}
+        {quizWithQuestions && <MixQuizSelector quizList={quizWithQuestions} />}
       </div>
     </>
   );

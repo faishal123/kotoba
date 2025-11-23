@@ -3,140 +3,26 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  DeleteDataFunctionType,
-  EditDataFunctionType,
   GetAllDataFunctionType,
   InsertNewDataFunctionType,
-  SupabaseQuestionType,
+  EditDataFunctionType,
+  DeleteDataFunctionType,
   SupabaseQuizType,
-} from "./page";
+  SupabaseQuestionType,
+} from "@/utils/supabase";
 import { toast } from "react-toastify";
+import { SingleQuizDisplay } from "@/components/Molecules/Upload/Quiz/Single";
 import { useEffect, useState } from "react";
+import { PencilIcon, TrashIcon } from "lucide-react";
+import { DialogComponent } from "@/components/Atoms/Dialog/Dialog";
+import { SelectComponent } from "@/components/Atoms/Select/Select";
+import { QuizList } from "@/components/Molecules/Upload/Quiz/List";
+import { QuestionsList } from "@/components/Molecules/Upload/Questions/List";
 
-const SingleQuizDisplay = ({
-  quiz,
-  onSubmit,
-  onDelete,
-  type,
-  refetchData,
-}:
-  | {
-      quiz: SupabaseQuizType;
-      onSubmit: EditDataFunctionType;
-      type: "edit";
-      onDelete: DeleteDataFunctionType;
-      refetchData: () => Promise<void>;
-    }
-  | {
-      quiz?: undefined;
-      onSubmit: InsertNewDataFunctionType;
-      type: "create";
-      onDelete?: undefined;
-      refetchData: () => Promise<void>;
-    }) => {
-  const [value, setValue] = useState({
-    quiz_name: quiz?.quiz_name || "",
-    description: quiz?.description || "",
-  });
-  const isEdit = type === "edit";
-
-  const submitFunction = async () => {
-    if (value.quiz_name.trim() === "") {
-      toast("Quiz name cannot be empty", { type: "error" });
-      return;
-    }
-    if (isEdit) {
-      await onSubmit({
-        table: "kotoba-quiz-list",
-        id: quiz?.id || "",
-        data: {
-          quiz_name: value.quiz_name,
-          description: value.description,
-        },
-      });
-      toast("Quiz updated successfully", { type: "success" });
-      await refetchData();
-    } else {
-      await onSubmit({
-        table: "kotoba-quiz-list",
-        data: [
-          {
-            quiz_name: value.quiz_name,
-            description: value.description,
-          },
-        ],
-      });
-      toast("Quiz created successfully", { type: "success" });
-      setValue({ quiz_name: "", description: "" });
-      await refetchData();
-    }
-  };
-
-  return (
-    <div className="max-w-[300px] w-full p-4 flex flex-col gap-2 rounded-md border border-primary">
-      <div>
-        <div>Quiz Name</div>
-        <Input
-          className="font-bold"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              submitFunction();
-            }
-          }}
-          onChange={(e) => {
-            setValue({ ...value, quiz_name: e.target.value });
-          }}
-          value={value.quiz_name}
-        />
-      </div>
-      <div>
-        <div>Description</div>
-        <Input
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              submitFunction();
-            }
-          }}
-          onChange={(e) => {
-            setValue({ ...value, description: e.target.value });
-          }}
-          value={value.description}
-        />
-      </div>
-      <div className="flex gap-2">
-        <Button
-          onClick={submitFunction}
-          disabled={
-            value.quiz_name === quiz?.quiz_name &&
-            value.description === quiz?.description
-          }
-        >
-          {isEdit ? "Edit" : "Create New Quiz"}
-        </Button>
-        {isEdit && (
-          <Button
-            onClick={async () => {
-              if (onDelete) {
-                await onDelete({
-                  table: "kotoba-quiz-list",
-                  id: quiz?.id || "",
-                });
-                toast("Quiz deleted successfully", { type: "success" });
-                await refetchData();
-              }
-            }}
-            variant="outline"
-          >
-            Delete
-          </Button>
-        )}
-      </div>
-    </div>
-  );
-};
+export type FetchDataType = () => Promise<void>;
 
 export const ClientPage = ({
-  //  uploadFunction,
+  uploadFunction,
   getAllData,
   insertNewData,
   editData,
@@ -146,15 +32,27 @@ export const ClientPage = ({
   insertNewData: InsertNewDataFunctionType;
   editData: EditDataFunctionType;
   deleteData: DeleteDataFunctionType;
-  // uploadFunction: () => Promise<void>;
+  uploadFunction: () => Promise<void>;
 }) => {
   const getAllDataFunction = async () => {
     const data = {
       quizzes: await getAllData("kotoba-quiz-list"),
-      questions: await getAllData("kotoba-questions"),
+      questions: await getAllData(
+        "kotoba-questions",
+        "id, romaji, furigana, kanji, meaning, quiz_id, kotoba-quiz-list(quiz_name)",
+        {
+          by: "quiz_id",
+          ascending: true,
+        }
+      ),
     };
+    console.log("sini loh", data);
     return data;
   };
+
+  const [activePage, setActivePage] = useState<"quizzes" | "questions">(
+    "questions"
+  );
 
   const [allData, setAllData] = useState<{
     quizzes: SupabaseQuizType[];
@@ -164,7 +62,7 @@ export const ClientPage = ({
     questions: [],
   });
 
-  const fetchData = async () => {
+  const fetchData: FetchDataType = async () => {
     const { quizzes = [], questions = [] } = await getAllDataFunction();
     if (quizzes && questions) {
       setAllData({ questions, quizzes });
@@ -177,33 +75,44 @@ export const ClientPage = ({
 
   return (
     <div className="p-5">
-      <div>
-        <h1 className="text-2xl font-bold mb-2">Existing Questions</h1>
+      <div className="flex gap-5 mb-5">
+        <Button
+          onClick={() => {
+            setActivePage("questions");
+          }}
+          variant={activePage === "questions" ? "default" : "outline"}
+        >
+          Questions
+        </Button>
+        <Button
+          onClick={() => {
+            setActivePage("quizzes");
+          }}
+          variant={activePage === "quizzes" ? "default" : "outline"}
+        >
+          Quizzes
+        </Button>
       </div>
-      <div>
-        <h1 className="text-2xl font-bold mb-2">Existing Quiz</h1>
-        <div className="flex flex-wrap gap-4">
-          {allData.quizzes.length
-            ? allData.quizzes.map((quiz) => {
-                return (
-                  <SingleQuizDisplay
-                    onDelete={deleteData}
-                    onSubmit={editData}
-                    key={quiz.id}
-                    type="edit"
-                    quiz={quiz}
-                    refetchData={fetchData}
-                  />
-                );
-              })
-            : "No Quiz Registered"}
-          <SingleQuizDisplay
-            refetchData={fetchData}
-            type="create"
-            onSubmit={insertNewData}
+      {activePage === "questions" && (
+        <div>
+          <QuestionsList
+            insertNewData={insertNewData}
+            editData={editData}
+            deleteData={deleteData}
+            fetchData={fetchData}
+            allData={allData}
           />
         </div>
-      </div>
+      )}
+      {activePage === "quizzes" && (
+        <QuizList
+          insertNewData={insertNewData}
+          editData={editData}
+          deleteData={deleteData}
+          fetchData={fetchData}
+          allData={allData}
+        />
+      )}
       {/* <Button
         onClick={() => {
           console.log("click");

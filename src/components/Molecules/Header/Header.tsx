@@ -1,3 +1,5 @@
+"use client";
+
 import { characterChoices } from "@/constant/characterChoices";
 import { usePathname } from "next/navigation";
 import { HeaderBackButton } from "./BackButton";

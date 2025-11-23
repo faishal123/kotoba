@@ -52,7 +52,7 @@ function DialogContent({
   showCloseButton = true,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
-  showCloseButton?: boolean
+  showCloseButton?: boolean;
 }) {
   return (
     <DialogPortal data-slot="dialog-portal">
@@ -129,6 +129,15 @@ function DialogDescription({
   );
 }
 
+const closeOpenedDialog = () => {
+  const dialogCloseButton = document.querySelector(
+    'button[data-slot="dialog-close"]'
+  ) as HTMLButtonElement;
+  if (dialogCloseButton) {
+    dialogCloseButton.click();
+  }
+};
+
 export {
   Dialog,
   DialogClose,
@@ -140,4 +149,5 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  closeOpenedDialog,
 };
