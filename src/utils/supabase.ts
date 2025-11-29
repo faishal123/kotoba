@@ -50,7 +50,7 @@ export type QuizToUploadType = {
   description: string;
 };
 
-export type GetAllDataFunctionType = (
+export type GetAllDataFunctionType = <T>(
   table: string,
   select?: string,
   order?: {
@@ -61,7 +61,7 @@ export type GetAllDataFunctionType = (
     by: string;
     value: string;
   }
-) => Promise<any[] | null>;
+) => Promise<T[] | null>;
 
 export type InsertNewDataFunctionType = ({
   table,
@@ -100,7 +100,7 @@ export type DeleteDataFunctionType = ({
   id: string;
 }) => Promise<any[] | null>;
 
-export const getAllData: GetAllDataFunctionType = async (
+export const getAllData: GetAllDataFunctionType = async <T>(
   table: string,
   select?: string,
   order?: {
@@ -113,7 +113,7 @@ export const getAllData: GetAllDataFunctionType = async (
   }
 ) => {
   "use server";
-  const { data: existingData } = eq
+  const { data } = eq
     ? await supabase
         .from(table)
         .select(select || "*")
@@ -126,7 +126,7 @@ export const getAllData: GetAllDataFunctionType = async (
         .order(order?.by || "id", { ascending: !!order?.ascending })
         .order("id", { ascending: true });
 
-  return existingData;
+  return data as T[] | null;
 };
 
 export const insertNewData: InsertNewDataFunctionType = async ({

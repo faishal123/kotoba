@@ -1,4 +1,9 @@
-import { getAllData, SupabaseAvailableQuizViewType } from "@/utils/supabase";
+import { removeDuplicates } from "@/utils/serverUtils";
+import {
+  getAllData,
+  SupabaseAvailableQuizViewType,
+  SupabaseQuestionType,
+} from "@/utils/supabase";
 
 export default async function Page({
   searchParams,
@@ -15,7 +20,7 @@ export default async function Page({
   );
 
   const questions = selectedQuizzes?.map(async (quiz) => {
-    const currenntQuizQuestions = await getAllData(
+    const currenntQuizQuestions = await getAllData<SupabaseQuestionType>(
       "kotoba-questions",
       undefined,
       undefined,
@@ -31,9 +36,19 @@ export default async function Page({
     };
   });
 
-  const questionsResolved = await Promise.all(questions || []);
+  const questionsFromSupabase = await Promise.all(questions || []);
 
-  console.log(questionsResolved);
+  const possibleAnswers = questionsFromSupabase.reduce((a, c) => {
+    const answers = removeDuplicates(
+      c?.questions?.flatMap((q) => q.meaning) || []
+    );
+    return {
+      ...a,
+      [c.quizName]: answers,
+    };
+  }, []);
+
+  console.log(questionsFromSupabase, possibleAnswers);
 
   return <div>test</div>;
 }
