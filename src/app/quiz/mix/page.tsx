@@ -13,16 +13,27 @@ export default async function Page({
   const selectedQuizzes = allQuizzes?.filter(
     (quiz) => quizzes.includes(quiz.quiz_name) && quiz.question_count > 0
   );
-  
+
   const questions = selectedQuizzes?.map(async (quiz) => {
-    const currenntQuizQuestions = await getAllData("kotoba-questions");
+    const currenntQuizQuestions = await getAllData(
+      "kotoba-questions",
+      undefined,
+      undefined,
+      {
+        by: "quiz_id",
+        value: quiz.id,
+      }
+    );
     return {
       quizName: quiz.quiz_name,
       questionCount: quiz.question_count,
       questions: currenntQuizQuestions,
     };
   });
-  console.log(quizzes, selectedQuizzes, questions);
+
+  const questionsResolved = await Promise.all(questions || []);
+
+  console.log(questionsResolved);
 
   return <div>test</div>;
 }

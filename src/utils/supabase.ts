@@ -56,6 +56,10 @@ export type GetAllDataFunctionType = (
   order?: {
     by: string;
     ascending: boolean;
+  },
+  eq?: {
+    by: string;
+    value: string;
   }
 ) => Promise<any[] | null>;
 
@@ -109,11 +113,18 @@ export const getAllData: GetAllDataFunctionType = async (
   }
 ) => {
   "use server";
-  const { data: existingData } = await supabase
-    .from(table)
-    .select(select || "*")
-    .order(order?.by || "id", { ascending: !!order?.ascending })
-    .order("id", { ascending: true });
+  const { data: existingData } = eq
+    ? await supabase
+        .from(table)
+        .select(select || "*")
+        .eq(eq.by, eq.value)
+        .order(order?.by || "id", { ascending: !!order?.ascending })
+        .order("id", { ascending: true })
+    : await supabase
+        .from(table)
+        .select(select || "*")
+        .order(order?.by || "id", { ascending: !!order?.ascending })
+        .order("id", { ascending: true });
 
   return existingData;
 };
