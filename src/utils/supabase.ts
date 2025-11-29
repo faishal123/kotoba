@@ -102,6 +102,10 @@ export const getAllData: GetAllDataFunctionType = async (
   order?: {
     by: string;
     ascending: boolean;
+  },
+  eq?: {
+    by: string;
+    value: string;
   }
 ) => {
   "use server";
