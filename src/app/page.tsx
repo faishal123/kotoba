@@ -13,6 +13,8 @@ export default async function Home() {
   const quizWithQuestions: SupabaseAvailableQuizViewType[] | undefined =
     allQuiz?.filter((quiz) => quiz.question_count > 0);
 
+  console.log("here", quizWithQuestions);
+
   return (
     <>
       <Header
