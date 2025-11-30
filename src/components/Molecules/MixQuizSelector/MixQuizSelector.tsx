@@ -13,7 +13,6 @@ export const MixQuizSelector = ({
 }: {
   quizList: SupabaseAvailableQuizViewType[];
 }) => {
-  console.log({ quizList });
   const [selectedQuiz, setSelectedQuiz] = useState<string[]>([]);
   const router = useRouter();
   return (
