@@ -25,8 +25,8 @@ export default function Page() {
       const correctAnswerArray = c.indonesian_translation_options;
       const correctAnswer = randomizeArray(correctAnswerArray)[0];
 
-      const possibleWrongAnswers = possibleAnswers.filter(
-        (a) => !correctAnswerArray.includes(a)
+      const possibleWrongAnswers = randomizeArray(
+        possibleAnswers.filter((a) => !correctAnswerArray.includes(a))
       );
       const firstWrongAnswerIndex = generateRandomNumber(
         0,

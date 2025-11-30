@@ -45,7 +45,8 @@ export default async function Page() {
       quiz_id: "6a173103-ced1-4a41-a5c1-22f71d9919ac",
     }));
 
-    const existingData = await getAllData("kotoba-questions");
+    const existingData =
+      await getAllData<SupabaseQuestionType>("kotoba-questions");
 
     // if (existingData) {
     const removedDuplicate = removeDuplicates(existingData, kataKerjaPart1Data);

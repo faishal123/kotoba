@@ -6,12 +6,13 @@ import { getAllData, SupabaseAvailableQuizViewType } from "@/utils/supabase";
 import { MixQuizSelector } from "@/components/Molecules/MixQuizSelector/MixQuizSelector";
 
 export default async function Home() {
-  const allQuiz = await getAllData("kotoba_quiz_available_list");
+  const allQuiz = await getAllData<SupabaseAvailableQuizViewType>(
+    "kotoba_quiz_available_list"
+  );
 
   const quizWithQuestions: SupabaseAvailableQuizViewType[] | undefined =
     allQuiz?.filter((quiz) => quiz.question_count > 0);
 
-  console.log("all quiz", allQuiz, quizWithQuestions);
   return (
     <>
       <Header

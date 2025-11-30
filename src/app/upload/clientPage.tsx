@@ -36,8 +36,8 @@ export const ClientPage = ({
 }) => {
   const getAllDataFunction = async () => {
     const data = {
-      quizzes: await getAllData("kotoba-quiz-list"),
-      questions: await getAllData(
+      quizzes: await getAllData<SupabaseQuizType>("kotoba-quiz-list"),
+      questions: await getAllData<SupabaseQuestionType>(
         "kotoba-questions",
         "id, romaji, furigana, kanji, meaning, quiz_id, kotoba-quiz-list(quiz_name)",
         {
@@ -46,7 +46,6 @@ export const ClientPage = ({
         }
       ),
     };
-    console.log("sini loh", data);
     return data;
   };
 
@@ -113,14 +112,6 @@ export const ClientPage = ({
           allData={allData}
         />
       )}
-      {/* <Button
-        onClick={() => {
-          console.log("click");
-          uploadFunction();
-        }}
-      >
-        Upload Data
-      </Button> */}
     </div>
   );
 };
