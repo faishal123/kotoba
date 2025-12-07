@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef } from "react";
 import correctSfx from "@/assets/sfx/correct_answer.mp3";
 import wrongSfx from "@/assets/sfx/wrong_answer.mp3";
