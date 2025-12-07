@@ -7,6 +7,7 @@ import { AnswerType, QuestionType } from "@/constant/types";
 import { ScoreScreen } from "@/components/Molecules/ScoreScreen/ScoreScreen";
 import { QuizProgressBar } from "@/components/Molecules/QuizProgressBar/QuizProgressBar";
 import { Card } from "@/components/Atoms/Card/Card";
+import { useQuizSound } from "@/utils/sound";
 
 export const QuizScreen = ({
   questions,
@@ -48,7 +49,14 @@ export const QuizScreen = ({
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  const { correctSound, wrongSound } = useQuizSound();
+
   const onClickAnswer = (answer: AnswerType, i: number) => {
+    if (answer.isCorrect) {
+      correctSound.play();
+    } else {
+      wrongSound.play();
+    }
     setState((prev) => ({
       ...prev,
       currentQuestionAnswered: true,
@@ -121,7 +129,7 @@ export const QuizScreen = ({
           currentQuestion?.answers?.[chosenAnswerIndex]?.isCorrect
         }
         currentQuestion={currentQuestion}
-        onClick={() => {
+        onClickContinue={() => {
           setState((prev) => ({
             ...prev,
             currentQuestionIndex: prev.currentQuestionIndex + 1,

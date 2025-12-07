@@ -7,12 +7,12 @@ import { ArrowRight } from "lucide-react";
 export const QuizFooter = ({
   show,
   isAnswerCorrect,
-  onClick,
+  onClickContinue,
   currentQuestion,
 }: {
   show?: boolean;
   isAnswerCorrect?: boolean;
-  onClick?: () => void;
+  onClickContinue?: () => void;
   currentQuestion?: QuestionType;
 }) => {
   const { isBreakingXs, isBreakingSm } = useIsBreaking();
@@ -27,7 +27,7 @@ export const QuizFooter = ({
     >
       {show && (
         <CardButton
-          onClick={onClick}
+          onClick={onClickContinue}
           variant={isAnswerCorrect ? "correct" : "wrong"}
           className="px-5 gap-2"
           size={isBreakingXs ? "xs" : isBreakingSm ? "sm" : "sm"}
