@@ -130,6 +130,8 @@ export const QuizScreen = ({
         }
         currentQuestion={currentQuestion}
         onClickContinue={() => {
+          correctSound.stop();
+          wrongSound.stop();
           setState((prev) => ({
             ...prev,
             currentQuestionIndex: prev.currentQuestionIndex + 1,
