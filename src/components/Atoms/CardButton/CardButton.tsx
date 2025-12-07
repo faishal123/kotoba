@@ -32,7 +32,7 @@ export const CardButton = ({
       tabIndex={0}
       role="button"
       className={cn([
-        "cursor-pointer flex items-center font-bold justify-center focus:outline-none",
+        "cursor-pointer flex items-center font-bold justify-center focus:outline-none transition-background duration-200",
         sizeClassName[size],
         className,
       ])}
