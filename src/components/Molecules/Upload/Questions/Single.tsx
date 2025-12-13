@@ -35,7 +35,7 @@ const formSchema = z.object({
   furigana: z.string(),
   romaji: z.string(),
   meaning: z.string(),
-  quiz_id: z.string(),
+  quiz_name: z.string(),
 });
 
 type FormType = z.infer<typeof formSchema>;
@@ -75,11 +75,11 @@ export const SingleQuestionDialog = ({
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      kanji: "",
-      romaji: "",
-      furigana: "",
-      meaning: "",
-      quiz_id: "",
+      kanji: question?.kanji,
+      romaji: question?.romaji,
+      furigana: question?.furigana,
+      meaning: question?.meaning.join(", "),
+      quiz_name: question?.["kotoba-quiz-list"]?.quiz_name || "",
     },
   });
 
@@ -150,7 +150,7 @@ export const SingleQuestionDialog = ({
   return (
     <DialogComponent title="Edit Question" trigger={trigger}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit2)}>
+        <form onSubmit={form.handleSubmit(onSubmit2)} className="space-y-4">
           <FormInput
             label="Kanji"
             name="kanji"
