@@ -4,23 +4,18 @@ import { SelectComponent } from "@/components/Atoms/Select/Select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import {
-  BaseQuestionType,
-  InsertNewDataFunctionType,
-  SupabaseQuizType,
-} from "@/utils/supabase";
+import { BaseQuestionType, SupabaseQuizType } from "@/utils/supabase";
 import { FetchDataType } from "@/app/upload/clientPage";
 import { closeOpenedDialog } from "@/components/ui/dialog";
+import { useCreateQuestions } from "@/services/create-questions/useCreateQuestions";
 
 export const UploadMultipleQuestionsDialog = ({
   trigger,
   allQuizzes,
-  insertNewData,
   fetchData,
 }: {
   trigger: ReactNode;
   allQuizzes: SupabaseQuizType[];
-  insertNewData: InsertNewDataFunctionType;
   fetchData: FetchDataType;
 }) => {
   const [value, setValue] = useState({
@@ -45,6 +40,8 @@ export const UploadMultipleQuestionsDialog = ({
       };
     }
   })();
+
+  const { mutate: createQuestions } = useCreateQuestions();
 
   return (
     <DialogComponent title="Upload Multiple Questions" trigger={trigger}>
@@ -96,10 +93,7 @@ export const UploadMultipleQuestionsDialog = ({
                   })
                 );
 
-                await insertNewData({
-                  table: "kotoba-questions",
-                  data: questionsToInsert,
-                });
+                createQuestions(questionsToInsert);
 
                 setValue((prev) => ({ ...prev, quiz: "", questionsData: "" }));
 

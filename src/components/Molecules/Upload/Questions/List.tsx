@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { TrashIcon } from "lucide-react";
 import {
   SupabaseQuizType,
   SupabaseQuestionType,
-  InsertNewDataFunctionType,
   EditDataFunctionType,
   DeleteDataFunctionType,
 } from "@/utils/supabase";
@@ -15,7 +13,6 @@ import { UploadMultipleQuestionsDialog } from "./UploadMultipleQuestions";
 
 export const QuestionsList = ({
   allData,
-  insertNewData,
   editData,
   deleteData,
   fetchData,
@@ -24,13 +21,11 @@ export const QuestionsList = ({
     quizzes: SupabaseQuizType[];
     questions: SupabaseQuestionType[];
   };
-  insertNewData: InsertNewDataFunctionType;
   editData: EditDataFunctionType;
   deleteData: DeleteDataFunctionType;
   fetchData: FetchDataType;
 }) => {
   const [quizFilter, setQuizFilter] = useState("");
-
   const questionsToDisplay = quizFilter
     ? allData.questions.filter((question) => question.quiz_id === quizFilter)
     : allData.questions;
@@ -62,13 +57,11 @@ export const QuestionsList = ({
         />
         <SingleQuestionDialog
           allQuizzes={allData?.quizzes}
-          onSubmit={insertNewData}
           trigger={<Button>Create a Question</Button>}
           type="create"
           refetchData={fetchData}
         />
         <UploadMultipleQuestionsDialog
-          insertNewData={insertNewData}
           trigger={<Button>Upload Multiple Questions</Button>}
           allQuizzes={allData?.quizzes}
           fetchData={fetchData}
@@ -90,7 +83,6 @@ export const QuestionsList = ({
             key={question.id}
             editData={editData}
             fetchData={fetchData}
-            deleteData={deleteData}
           />
         ))}
       </table>

@@ -3,9 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  DeleteDataFunctionType,
   EditDataFunctionType,
-  InsertNewDataFunctionType,
   SupabaseQuestionType,
   SupabaseQuizType,
 } from "@/utils/supabase";
@@ -16,6 +14,31 @@ import { DialogComponent } from "@/components/Atoms/Dialog/Dialog";
 import { SelectComponent } from "@/components/Atoms/Select/Select";
 import { toast } from "react-toastify";
 import { closeOpenedDialog } from "@/components/ui/dialog";
+import { useCreateQuestions } from "@/services/create-questions/useCreateQuestions";
+import { useDeleteQuestion } from "@/services/delete-question/useDeleteQuestion";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { FormInput } from "@/components/Atoms/Form/FormInput";
+
+const formSchema = z.object({
+  kanji: z.string(),
+  furigana: z.string(),
+  romaji: z.string(),
+  meaning: z.string(),
+  quiz_id: z.string(),
+});
+
+type FormType = z.infer<typeof formSchema>;
 
 export const SingleQuestionDialog = ({
   question,
@@ -35,11 +58,11 @@ export const SingleQuestionDialog = ({
     }
   | {
       question?: undefined;
-      onSubmit: InsertNewDataFunctionType;
       allQuizzes?: SupabaseQuizType[];
       type: "create";
       trigger?: ReactNode;
       refetchData: FetchDataType;
+      onSubmit: undefined;
     }) => {
   const [value, setValue] = useState({
     kanji: question?.kanji,
@@ -48,6 +71,23 @@ export const SingleQuestionDialog = ({
     meaning: question?.meaning.join(", "),
     quiz_name: question?.["kotoba-quiz-list"]?.quiz_name || "",
   });
+
+  const form = useForm<FormType>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      kanji: "",
+      romaji: "",
+      furigana: "",
+      meaning: "",
+      quiz_id: "",
+    },
+  });
+
+  const onSubmit2 = (data: FormType) => {
+    console.log("sini oi submit", data);
+  };
+
+  const { mutateAsync: createQuestions } = useCreateQuestions();
 
   const isEdit = type === "edit";
 
@@ -80,18 +120,15 @@ export const SingleQuestionDialog = ({
       });
       toast("Question updated successfully", { type: "success" });
     } else {
-      await onSubmit({
-        table: "kotoba-questions",
-        data: [
-          {
-            kanji: value.kanji,
-            furigana: value.furigana,
-            romaji: value.romaji,
-            meaning: value.meaning.split(",").map((m) => m.trim()),
-            quiz_id,
-          },
-        ],
-      });
+      await createQuestions([
+        {
+          kanji: value.kanji,
+          furigana: value.furigana,
+          romaji: value.romaji,
+          meaning: value.meaning.split(",").map((m) => m.trim()),
+          quiz_id,
+        },
+      ]);
       setValue({
         kanji: "",
         furigana: "",
@@ -112,6 +149,35 @@ export const SingleQuestionDialog = ({
   };
   return (
     <DialogComponent title="Edit Question" trigger={trigger}>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit2)}>
+          <FormInput
+            label="Kanji"
+            name="kanji"
+            control={form.control}
+            placeholder="Kanji"
+          />
+          <FormInput
+            label="Furigana"
+            name="furigana"
+            control={form.control}
+            placeholder="Furigana"
+          />
+          <FormInput
+            label="Romaji"
+            name="romaji"
+            control={form.control}
+            placeholder="Romaji"
+          />
+          <FormInput
+            label="Meaning"
+            name="meaning"
+            control={form.control}
+            placeholder="Meaning"
+          />
+          <Button type="submit">Edit</Button>
+        </form>
+      </Form>
       <div>
         <div>Kanji</div>
         <Input
@@ -177,7 +243,6 @@ export const SingleQuestionRow = ({
   allData,
   editData,
   fetchData,
-  deleteData,
 }: {
   question: SupabaseQuestionType;
   editData: EditDataFunctionType;
@@ -186,8 +251,8 @@ export const SingleQuestionRow = ({
     quizzes: SupabaseQuizType[];
     questions: SupabaseQuestionType[];
   };
-  deleteData: DeleteDataFunctionType;
 }) => {
+  const { mutateAsync: deleteQuestion } = useDeleteQuestion();
   return (
     <tr>
       <td className="p-2 border border-primary">{question.kanji}</td>
@@ -219,10 +284,7 @@ export const SingleQuestionRow = ({
                 `Are you sure you want to delete this question "${question.kanji} (${question.romaji})" ?`
               )
             ) {
-              await deleteData({
-                table: "kotoba-questions",
-                id: question.id,
-              });
+              await deleteQuestion(question.id);
               toast("Question deleted successfully", { type: "success" });
               await fetchData();
             }

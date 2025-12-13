@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   GetAllDataFunctionType,
   InsertNewDataFunctionType,
@@ -10,19 +9,13 @@ import {
   SupabaseQuizType,
   SupabaseQuestionType,
 } from "@/utils/supabase";
-import { toast } from "react-toastify";
-import { SingleQuizDisplay } from "@/components/Molecules/Upload/Quiz/Single";
 import { useEffect, useState } from "react";
-import { PencilIcon, TrashIcon } from "lucide-react";
-import { DialogComponent } from "@/components/Atoms/Dialog/Dialog";
-import { SelectComponent } from "@/components/Atoms/Select/Select";
 import { QuizList } from "@/components/Molecules/Upload/Quiz/List";
 import { QuestionsList } from "@/components/Molecules/Upload/Questions/List";
 
 export type FetchDataType = () => Promise<void>;
 
 export const ClientPage = ({
-  uploadFunction,
   getAllData,
   insertNewData,
   editData,
@@ -32,11 +25,14 @@ export const ClientPage = ({
   insertNewData: InsertNewDataFunctionType;
   editData: EditDataFunctionType;
   deleteData: DeleteDataFunctionType;
-  uploadFunction: () => Promise<void>;
 }) => {
   const getAllDataFunction = async () => {
     const data = {
-      quizzes: await getAllData<SupabaseQuizType>("kotoba-quiz-list"),
+      quizzes: await getAllData<SupabaseQuizType>(
+        "kotoba-quiz-list",
+        undefined,
+        { by: "quiz_name", ascending: true }
+      ),
       questions: await getAllData<SupabaseQuestionType>(
         "kotoba-questions",
         "id, romaji, furigana, kanji, meaning, quiz_id, kotoba-quiz-list(quiz_name)",
@@ -95,7 +91,6 @@ export const ClientPage = ({
       {activePage === "questions" && (
         <div>
           <QuestionsList
-            insertNewData={insertNewData}
             editData={editData}
             deleteData={deleteData}
             fetchData={fetchData}
