@@ -45,10 +45,18 @@ export interface QuestionToUploadType extends BaseQuestionType {
   quiz_id: string;
 }
 
+export interface QuestionToEditType extends QuestionToUploadType {
+  question_id: string;
+}
+
 export type QuizToUploadType = {
   quiz_name: string;
   description: string;
 };
+
+export interface QuizToEditType extends QuizToUploadType {
+  quiz_id: string;
+}
 
 export type GetAllDataFunctionType = <T>(
   table: string,
@@ -144,7 +152,7 @@ export const insertNewData: InsertNewDataFunctionType = async ({
 
     return insertedData;
   } catch (error) {
-    return null;
+    throw error;
   }
 };
 
@@ -164,12 +172,16 @@ export const editData = async ({
       data: Partial<QuizToUploadType>;
     }) => {
   "use server";
-  const { data: updatedData } = await supabase
-    .from(table)
-    .update(data)
-    .eq("id", id)
-    .select();
-  return updatedData;
+  try {
+    const { data: updatedData } = await supabase
+      .from(table)
+      .update(data)
+      .eq("id", id)
+      .select();
+    return updatedData;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const deleteData: DeleteDataFunctionType = async ({
@@ -180,10 +192,33 @@ export const deleteData: DeleteDataFunctionType = async ({
   id: string;
 }) => {
   "use server";
-  const { data: deletedData } = await supabase
-    .from(table)
-    .delete()
-    .eq("id", id)
-    .select();
-  return deletedData;
+  try {
+    const { data: deletedData } = await supabase
+      .from(table)
+      .delete()
+      .eq("id", id)
+      .select();
+    return deletedData;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const removeDuplicateQuestions = (
+  existingData: SupabaseQuestionType[] | null,
+  dataToUpload: QuestionToUploadType[]
+) => {
+  return dataToUpload.reduce<QuestionToUploadType[]>((a, c) => {
+    const currentItemExist = (existingData || []).reduce<boolean>((a2, c2) => {
+      const romajiMatch = c2.romaji === c.romaji;
+      const furiganaMatch = c2.furigana === c.furigana;
+      const kanjiMatch = c2.kanji === c.kanji;
+      return a2 || (romajiMatch && furiganaMatch && kanjiMatch);
+    }, false);
+
+    if (currentItemExist) {
+      return a;
+    }
+    return [...a, c];
+  }, []);
 };

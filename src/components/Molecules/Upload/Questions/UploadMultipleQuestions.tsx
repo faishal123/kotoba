@@ -4,23 +4,19 @@ import { SelectComponent } from "@/components/Atoms/Select/Select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import {
-  BaseQuestionType,
-  InsertNewDataFunctionType,
-  SupabaseQuizType,
-} from "@/utils/supabase";
+import { BaseQuestionType, SupabaseQuizType } from "@/utils/supabase";
 import { FetchDataType } from "@/app/upload/clientPage";
 import { closeOpenedDialog } from "@/components/ui/dialog";
+import { useCreateQuestions } from "@/services/create-questions/useCreateQuestions";
+import { toast } from "react-toastify";
 
 export const UploadMultipleQuestionsDialog = ({
   trigger,
   allQuizzes,
-  insertNewData,
   fetchData,
 }: {
   trigger: ReactNode;
   allQuizzes: SupabaseQuizType[];
-  insertNewData: InsertNewDataFunctionType;
   fetchData: FetchDataType;
 }) => {
   const [value, setValue] = useState({
@@ -46,11 +42,16 @@ export const UploadMultipleQuestionsDialog = ({
     }
   })();
 
+  const { mutateAsync: createQuestions, isPending: createQuestionsPending } =
+    useCreateQuestions({
+      onError: (e) => toast(e.message, { type: "error" }),
+    });
+
   return (
     <DialogComponent title="Upload Multiple Questions" trigger={trigger}>
       {value.quiz && questionsParsed?.parsed?.length ? (
         <div>
-          <table className="border border-primary max-h-[80vh] overflow-y-auto block">
+          <table className="max-h-[80vh] overflow-y-auto block">
             <tr>
               <th className="border border-primary bg-gray-100 p-2">Kanji</th>
               <th className="border border-primary bg-gray-100 p-2">
@@ -74,6 +75,7 @@ export const UploadMultipleQuestionsDialog = ({
           </table>
           <div className="mt-4 flex gap-2 justify-end">
             <Button
+              disabled={createQuestionsPending}
               onClick={() => {
                 setValue((prev) => ({ ...prev, quiz: "", questionsData: "" }));
               }}
@@ -81,6 +83,7 @@ export const UploadMultipleQuestionsDialog = ({
               Cancel
             </Button>
             <Button
+              isLoading={createQuestionsPending}
               onClick={async () => {
                 const quizSelected = allQuizzes.find(
                   (q) => q.quiz_name === value.quiz
@@ -91,15 +94,15 @@ export const UploadMultipleQuestionsDialog = ({
 
                 const questionsToInsert = questionsParsed.parsed!.map(
                   (question) => ({
-                    ...question,
+                    kanji: question?.kanji,
+                    furigana: question?.furigana,
+                    meaning: question?.meaning,
+                    romaji: question?.romaji,
                     quiz_id: quizSelected.id,
                   })
                 );
 
-                await insertNewData({
-                  table: "kotoba-questions",
-                  data: questionsToInsert,
-                });
+                await createQuestions(questionsToInsert);
 
                 setValue((prev) => ({ ...prev, quiz: "", questionsData: "" }));
 

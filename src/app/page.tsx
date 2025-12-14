@@ -4,19 +4,12 @@ import { Card } from "@/components/Atoms/Card/Card";
 import { Header } from "@/components/Molecules/Header/Header";
 import { characterChoices } from "@/constant/characterChoices";
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
 import { MixQuizSelector } from "@/components/Molecules/MixQuizSelector/MixQuizSelector";
-import { SupabaseAvailableQuizViewType } from "@/utils/supabase";
+import { useAvailableQuizList } from "@/services/available-quiz-list/useAvailableQuizList";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function Home() {
-  const { data } = useQuery<SupabaseAvailableQuizViewType[]>({
-    queryKey: ["available-quiz-list"],
-    queryFn: async () => {
-      const res = await fetch("/api/available-questions");
-      const data = await res.json();
-      return data.data;
-    },
-  });
+  const { data, isPending } = useAvailableQuizList();
 
   const quizWithQuestions = data?.filter((quiz) => quiz.question_count > 0);
 
@@ -40,6 +33,11 @@ export default function Home() {
           </Link>
         ))}
         {quizWithQuestions && <MixQuizSelector quizList={quizWithQuestions} />}
+        {isPending && (
+          <Card className="w-full h-full p-5 flex gap-5 items-center justify-center">
+            <Spinner className="size-15 text-primary" />
+          </Card>
+        )}
       </div>
     </>
   );

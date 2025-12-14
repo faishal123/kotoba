@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { TrashIcon } from "lucide-react";
-import {
-  SupabaseQuizType,
-  SupabaseQuestionType,
-  InsertNewDataFunctionType,
-  EditDataFunctionType,
-  DeleteDataFunctionType,
-} from "@/utils/supabase";
+import { SupabaseQuizType, SupabaseQuestionType } from "@/utils/supabase";
 import { FetchDataType } from "@/app/upload/clientPage";
 import { SingleQuestionDialog, SingleQuestionRow } from "./Single";
 import { SelectComponent } from "@/components/Atoms/Select/Select";
@@ -15,24 +8,19 @@ import { UploadMultipleQuestionsDialog } from "./UploadMultipleQuestions";
 
 export const QuestionsList = ({
   allData,
-  insertNewData,
-  editData,
-  deleteData,
   fetchData,
 }: {
   allData: {
-    quizzes: SupabaseQuizType[];
-    questions: SupabaseQuestionType[];
+    quizzes: SupabaseQuizType[] | undefined | null;
+    questions: SupabaseQuestionType[] | undefined | null;
   };
-  insertNewData: InsertNewDataFunctionType;
-  editData: EditDataFunctionType;
-  deleteData: DeleteDataFunctionType;
   fetchData: FetchDataType;
 }) => {
   const [quizFilter, setQuizFilter] = useState("");
-
   const questionsToDisplay = quizFilter
-    ? allData.questions.filter((question) => question.quiz_id === quizFilter)
+    ? (allData?.questions || [])?.filter(
+        (question) => question.quiz_id === quizFilter
+      )
     : allData.questions;
 
   return (
@@ -43,7 +31,7 @@ export const QuestionsList = ({
           placeholder="All Quizzes"
           triggerClassName="max-w-[300px]"
           onChange={(e) => {
-            const selectedQuiz = allData.quizzes.find(
+            const selectedQuiz = (allData?.quizzes || [])?.find(
               (quiz) => quiz.quiz_name === e
             );
             if (selectedQuiz) {
@@ -54,45 +42,43 @@ export const QuestionsList = ({
           }}
           options={[
             { label: "All Quizzes", value: "All Quizzes" },
-            ...allData.quizzes.map((quiz) => ({
+            ...(allData?.quizzes || [])?.map((quiz) => ({
               label: quiz.quiz_name,
               value: quiz.quiz_name,
             })),
           ]}
         />
         <SingleQuestionDialog
-          allQuizzes={allData?.quizzes}
-          onSubmit={insertNewData}
+          allQuizzes={allData?.quizzes || []}
           trigger={<Button>Create a Question</Button>}
           type="create"
           refetchData={fetchData}
         />
         <UploadMultipleQuestionsDialog
-          insertNewData={insertNewData}
           trigger={<Button>Upload Multiple Questions</Button>}
-          allQuizzes={allData?.quizzes}
+          allQuizzes={allData?.quizzes || []}
           fetchData={fetchData}
         />
       </div>
-      <table className="border border-primary">
-        <tr>
-          <th className="border border-primary bg-gray-100 p-2">Kanji</th>
-          <th className="border border-primary bg-gray-100 p-2">Furigana</th>
-          <th className="border border-primary bg-gray-100 p-2">Romaji</th>
-          <th className="border border-primary bg-gray-100 p-2">Meaning</th>
-          <th className="border border-primary bg-gray-100 p-2">Quiz Name</th>
-          <th className="border border-primary bg-gray-100 p-2">Actions</th>
-        </tr>
-        {questionsToDisplay?.map((question) => (
-          <SingleQuestionRow
-            allData={allData}
-            question={question}
-            key={question.id}
-            editData={editData}
-            fetchData={fetchData}
-            deleteData={deleteData}
-          />
-        ))}
+      <table>
+        <tbody>
+          <tr>
+            <th className="border border-primary bg-gray-100 p-2">Kanji</th>
+            <th className="border border-primary bg-gray-100 p-2">Furigana</th>
+            <th className="border border-primary bg-gray-100 p-2">Romaji</th>
+            <th className="border border-primary bg-gray-100 p-2">Meaning</th>
+            <th className="border border-primary bg-gray-100 p-2">Quiz Name</th>
+            <th className="border border-primary bg-gray-100 p-2">Actions</th>
+          </tr>
+          {questionsToDisplay?.map((question) => (
+            <SingleQuestionRow
+              allData={allData}
+              question={question}
+              key={question.id}
+              fetchData={fetchData}
+            />
+          ))}
+        </tbody>
       </table>
     </div>
   );

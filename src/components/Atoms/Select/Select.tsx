@@ -8,7 +8,7 @@ import {
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
-interface SelectOptionType {
+export interface SelectOptionType {
   value: string;
   label: ReactNode;
 }
@@ -22,6 +22,7 @@ interface SelectComponentProps {
   placeholder?: string;
   onChange?: (value: string) => void;
   value?: string;
+  disabled?: boolean;
 }
 
 export const SelectComponent = ({
@@ -33,9 +34,15 @@ export const SelectComponent = ({
   options,
   onChange,
   value,
+  disabled,
 }: SelectComponentProps) => {
   return (
-    <Select onValueChange={onChange} value={value} defaultValue={value}>
+    <Select
+      disabled={disabled}
+      onValueChange={onChange}
+      value={value}
+      defaultValue={value}
+    >
       <SelectTrigger className={cn([triggerClassName, "w-full"])}>
         <SelectValue placeholder={placeholder} className={valueClassName} />
       </SelectTrigger>

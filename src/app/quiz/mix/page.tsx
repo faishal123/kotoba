@@ -132,6 +132,7 @@ export default async function Page({
   }
 
   const multiplyFactor = Math.ceil(questionCount / questions.length);
+
   const extendedQuestions = Array.from(Array(multiplyFactor).keys()).flatMap(
     () => {
       return questions;
