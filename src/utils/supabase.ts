@@ -45,10 +45,18 @@ export interface QuestionToUploadType extends BaseQuestionType {
   quiz_id: string;
 }
 
+export interface QuestionToEditType extends QuestionToUploadType {
+  question_id: string;
+}
+
 export type QuizToUploadType = {
   quiz_name: string;
   description: string;
 };
+
+export interface QuizToEditType extends QuizToUploadType {
+  quiz_id: string;
+}
 
 export type GetAllDataFunctionType = <T>(
   table: string,

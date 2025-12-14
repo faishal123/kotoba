@@ -1,68 +1,37 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  GetAllDataFunctionType,
-  InsertNewDataFunctionType,
-  EditDataFunctionType,
-  DeleteDataFunctionType,
-  SupabaseQuizType,
-  SupabaseQuestionType,
-} from "@/utils/supabase";
 import { useEffect, useState } from "react";
 import { QuizList } from "@/components/Molecules/Upload/Quiz/List";
 import { QuestionsList } from "@/components/Molecules/Upload/Questions/List";
+import { useGetQuestions } from "@/services/get-questions/useGetQuestions";
+import { useGetQuizzes } from "@/services/get-quizzes/useGetQuizzes";
+import { Spinner } from "@/components/ui/spinner";
 
 export type FetchDataType = () => Promise<void>;
 
-export const ClientPage = ({
-  getAllData,
-  insertNewData,
-  editData,
-  deleteData,
-}: {
-  getAllData: GetAllDataFunctionType;
-  insertNewData: InsertNewDataFunctionType;
-  editData: EditDataFunctionType;
-  deleteData: DeleteDataFunctionType;
-}) => {
-  const getAllDataFunction = async () => {
-    const data = {
-      quizzes: await getAllData<SupabaseQuizType>(
-        "kotoba-quiz-list",
-        undefined,
-        { by: "quiz_name", ascending: true }
-      ),
-      questions: await getAllData<SupabaseQuestionType>(
-        "kotoba-questions",
-        "id, romaji, furigana, kanji, meaning, quiz_id, kotoba-quiz-list(quiz_name)",
-        {
-          by: "quiz_id",
-          ascending: true,
-        }
-      ),
-    };
-    return data;
-  };
-
+export const ClientPage = () => {
   const [activePage, setActivePage] = useState<"quizzes" | "questions">(
     "questions"
   );
 
-  const [allData, setAllData] = useState<{
-    quizzes: SupabaseQuizType[];
-    questions: SupabaseQuestionType[];
-  }>({
-    quizzes: [],
-    questions: [],
-  });
+  const {
+    data: questions,
+    refetch: refetchQuestions,
+    isPending: fetchQuestionsPending,
+  } = useGetQuestions();
+  const {
+    data: quizzes,
+    refetch: refetchQuizzes,
+    isPending: fetchQuizzesPending,
+  } = useGetQuizzes();
 
   const fetchData: FetchDataType = async () => {
-    const { quizzes = [], questions = [] } = await getAllDataFunction();
-    if (quizzes && questions) {
-      setAllData({ questions, quizzes });
-    }
+    refetchQuestions();
+    refetchQuizzes();
   };
+
+  const allData = { questions, quizzes };
 
   useEffect(() => {
     fetchData();
@@ -88,24 +57,21 @@ export const ClientPage = ({
           Quizzes
         </Button>
       </div>
-      {activePage === "questions" && (
-        <div>
-          <QuestionsList
-            editData={editData}
-            deleteData={deleteData}
-            fetchData={fetchData}
-            allData={allData}
-          />
+      {fetchQuestionsPending || fetchQuizzesPending ? (
+        <div className="w-full flex justify-center">
+          <Spinner className="text-primary size-10" />
         </div>
-      )}
-      {activePage === "quizzes" && (
-        <QuizList
-          insertNewData={insertNewData}
-          editData={editData}
-          deleteData={deleteData}
-          fetchData={fetchData}
-          allData={allData}
-        />
+      ) : (
+        <>
+          {activePage === "questions" && (
+            <div>
+              <QuestionsList fetchData={fetchData} allData={allData} />
+            </div>
+          )}
+          {activePage === "quizzes" && (
+            <QuizList fetchData={fetchData} allData={allData} />
+          )}
+        </>
       )}
     </div>
   );

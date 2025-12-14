@@ -1,16 +1,15 @@
-import { QuestionToUploadType } from "@/utils/supabase";
+import { QuizToUploadType } from "@/utils/supabase";
 
-export const createQuestions = async (questions: QuestionToUploadType[]) => {
-  const res = await fetch("/api/questions", {
+export const createQuiz = async (quiz: QuizToUploadType) => {
+  const res = await fetch("/api/quizzes", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ questions }),
+    body: JSON.stringify({ quiz }),
   });
 
   let data = null;
-
   try {
     data = await res.json();
   } catch (e) {

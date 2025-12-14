@@ -1,12 +1,9 @@
-import { QuestionToUploadType } from "@/utils/supabase";
-
-export const createQuestions = async (questions: QuestionToUploadType[]) => {
-  const res = await fetch("/api/questions", {
-    method: "POST",
+export const deleteQuiz = async (id: string) => {
+  const res = await fetch(`/api/quizzes?id=${id}`, {
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ questions }),
   });
 
   let data = null;

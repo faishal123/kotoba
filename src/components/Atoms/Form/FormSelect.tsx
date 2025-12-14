@@ -6,26 +6,28 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Control, FieldValues, Path } from "react-hook-form";
+import { SelectComponent, SelectOptionType } from "../Select/Select";
 
-type FormInputProps<FormType extends FieldValues> = {
+type FormSelectProps<FormType extends FieldValues> = {
   name: Path<FormType>;
   control: Control<FormType>;
   placeholder?: string;
   description?: string;
   label?: string;
+  options: SelectOptionType[];
   disabled?: boolean;
 };
 
-export const FormInput = <T extends FieldValues>({
+export const FormSelect = <T extends FieldValues>({
   name,
   control,
-  label,
   placeholder,
   description,
+  options,
+  label,
   disabled,
-}: FormInputProps<T>) => {
+}: FormSelectProps<T>) => {
   return (
     <FormField
       disabled={disabled}
@@ -36,7 +38,15 @@ export const FormInput = <T extends FieldValues>({
           <FormItem>
             {label && <FormLabel>{label}</FormLabel>}
             <FormControl>
-              <Input disabled={disabled} placeholder={placeholder} {...field} />
+              <SelectComponent
+                disabled={disabled}
+                onChange={(value) => {
+                  field.onChange(value);
+                }}
+                value={field.value}
+                options={options}
+                placeholder={placeholder}
+              />
             </FormControl>
             {description && <FormDescription>{description}</FormDescription>}
             <FormMessage />

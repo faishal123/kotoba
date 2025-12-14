@@ -14,6 +14,7 @@
   --red: #ff3e50;
   --red-secondary: #ff8c97;
   --gray: #a2a2a2;
+  --destructive: #ff3e50;
   --default-transition-duration: 200ms;
 }
 
@@ -31,6 +32,7 @@
   --color-green-secondary: var(--green-secondary);
   --color-red: var(--red);
   --color-red-secondary: var(--red-secondary);
+  --color-destructive: var(--destructive);
   --color-gray: var(--gray);
   --breakpoint-lg: 106.25rem; /* 1700px */
   --breakpoint-md: 78.75rem; /* 1260px */
@@ -52,7 +54,7 @@ body {
 }
 
 @utility button-shadow-* {
-  box-shadow: 0px 4px 0px --value(--color- *);
+  box-shadow: 0px 4px 0px --value(--color-*);
 }
 
 html {

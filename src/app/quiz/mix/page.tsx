@@ -132,13 +132,7 @@ export default async function Page({
   }
 
   const multiplyFactor = Math.ceil(questionCount / questions.length);
-  console.log(
-    "sini oi",
-    multiplyFactor,
-    questionCount,
-    questions,
-    questionsFromSupabase
-  );
+
   const extendedQuestions = Array.from(Array(multiplyFactor).keys()).flatMap(
     () => {
       return questions;

@@ -1,16 +1,15 @@
-import { QuestionToUploadType } from "@/utils/supabase";
+import { QuestionToEditType } from "@/utils/supabase";
 
-export const createQuestions = async (questions: QuestionToUploadType[]) => {
+export const editQuestion = async (question: QuestionToEditType) => {
   const res = await fetch("/api/questions", {
-    method: "POST",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ questions }),
+    body: JSON.stringify({ question }),
   });
 
   let data = null;
-
   try {
     data = await res.json();
   } catch (e) {
