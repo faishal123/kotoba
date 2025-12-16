@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { ReactNode } from "react";
+import { KeyboardEventHandler, ReactNode } from "react";
 
 const textColorClassNames = {
   default: "text-primary",
@@ -21,19 +21,25 @@ export const Card = ({
   role,
   tabIndex,
   onClick,
+  onKeyDown,
   variant = "default",
   omitTextColor = false,
+  id,
 }: {
   onClick?: () => void;
+  onKeyDown?: KeyboardEventHandler<HTMLDivElement> | undefined;
   children?: ReactNode;
   className?: string;
   role?: "button";
   tabIndex?: number;
   variant?: "default" | "correct" | "wrong" | "plain";
   omitTextColor?: boolean;
+  id?: string;
 }) => {
   return (
     <div
+      onKeyDown={onKeyDown}
+      id={id}
       role={role}
       tabIndex={tabIndex}
       onClick={onClick}

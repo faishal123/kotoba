@@ -27,6 +27,12 @@ export const QuizFooter = ({
     >
       {show && (
         <CardButton
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              onClickContinue?.();
+            }
+          }}
+          id="continueButton"
           onClick={onClickContinue}
           variant={isAnswerCorrect ? "correct" : "wrong"}
           className="px-5 gap-2"

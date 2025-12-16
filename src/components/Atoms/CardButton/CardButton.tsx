@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { KeyboardEventHandler, ReactNode } from "react";
 import { Card } from "../Card/Card";
 import { cn } from "@/lib/utils";
 
@@ -12,22 +12,28 @@ const sizeClassName = {
 export const CardButton = ({
   children,
   onClick,
+  onKeyDown,
   className,
   size = "md",
   variant,
   omitTextColor = false,
+  id,
 }: {
   className?: string;
   children?: ReactNode;
   onClick?: () => void;
+  onKeyDown?: KeyboardEventHandler<HTMLDivElement> | undefined;
   size?: "xs" | "sm" | "md" | "lg";
   variant?: "default" | "correct" | "wrong";
   omitTextColor?: boolean;
+  id?: string;
 }) => {
   return (
     <Card
+      id={id}
       omitTextColor={omitTextColor}
       variant={variant}
+      onKeyDown={onKeyDown}
       onClick={onClick}
       tabIndex={0}
       role="button"

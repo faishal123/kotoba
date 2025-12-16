@@ -21,9 +21,15 @@ export const characterChoices = [
   },
   {
     href: "/levels/number",
-    label: "Number",
+    label: "Number Basic",
     character: "五",
-    description: "Practice Japanese numbers.",
+    description: "Practice single character japanese number.",
+  },
+  {
+    href: "/quiz/random-number",
+    label: "Random Number",
+    character: "五",
+    description: "Practice translating a random number to japanese.",
   },
   {
     href: "/quiz/occupation",
