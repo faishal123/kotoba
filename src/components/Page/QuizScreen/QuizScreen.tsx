@@ -20,6 +20,7 @@ export const QuizScreen = ({
   answerClassName,
   containerClassName,
   answerMethod = "multiple-choice",
+  answerInputProps = {},
 }: {
   questions: QuestionType[];
   levelName: string;
@@ -29,6 +30,7 @@ export const QuizScreen = ({
   answerClassName?: string;
   containerClassName?: string;
   answerMethod?: "multiple-choice" | "input";
+  answerInputProps?: React.ComponentProps<"input">;
 }) => {
   const [state, setState] = useState<{
     correct: number;
@@ -204,6 +206,7 @@ export const QuizScreen = ({
                   }}
                   autoFocus
                   id="answerInput"
+                  {...answerInputProps}
                 />
                 <Button
                   disabled={currentQuestionAnswered}

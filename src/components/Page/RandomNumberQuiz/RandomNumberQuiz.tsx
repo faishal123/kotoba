@@ -67,6 +67,9 @@ export default function RandomNumberQuiz() {
       levelName={"Random Numbers"}
       questions={questions}
       answerMethod="input"
+      answerInputProps={{
+        type: "number",
+      }}
     />
   );
 }
