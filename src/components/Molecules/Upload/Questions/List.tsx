@@ -63,6 +63,7 @@ export const QuestionsList = ({
       <table>
         <tbody>
           <tr>
+            <th className="border border-primary bg-gray-100 p-2"></th>
             <th className="border border-primary bg-gray-100 p-2">Kanji</th>
             <th className="border border-primary bg-gray-100 p-2">Furigana</th>
             <th className="border border-primary bg-gray-100 p-2">Romaji</th>

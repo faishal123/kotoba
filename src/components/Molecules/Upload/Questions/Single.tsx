@@ -186,6 +186,7 @@ export const SingleQuestionRow = ({
     });
   return (
     <tr>
+      <td className="p-2 border border-primary"></td>
       <td className="p-2 border border-primary">{question.kanji}</td>
       <td className="p-2 border border-primary">{question.furigana}</td>
       <td className="p-2 border border-primary">{question.romaji}</td>
