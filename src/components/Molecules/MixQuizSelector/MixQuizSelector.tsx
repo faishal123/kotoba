@@ -42,8 +42,8 @@ export const MixQuizSelector = ({
               </div>
             )}
             <div>
-              <div className="text-lg font-bold">{quiz.quiz_name}</div>
-              <div className="text-lg">
+              <div className="text-foreground text-lg font-bold">{quiz.quiz_name}</div>
+              <div className="text-foreground text-lg">
                 {quiz.description} ({quiz.question_count} Unique Questions)
               </div>
             </div>

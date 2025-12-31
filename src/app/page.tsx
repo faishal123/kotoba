@@ -9,6 +9,7 @@ import { MixQuizSelector } from "@/components/Molecules/MixQuizSelector/MixQuizS
 import { useAvailableQuizList } from "@/services/available-quiz-list/useAvailableQuizList";
 import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
+import { SearchIcon } from "lucide-react";
 
 export default function Home() {
   const [searchValue, setSearchValue] = useState("");
@@ -31,13 +32,17 @@ export default function Home() {
         customCharacter="言葉"
       />
       <div className="px-10 pt-5 pb-0">
-        <Input
-          value={searchValue}
-          onChange={(e) => {
-            setSearchValue(e.target.value);
-          }}
-          placeholder="Search Quiz"
-        />
+        <div className="relative">
+          <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2" size={20} />
+          <Input
+            className="pl-10 bg-white"
+            value={searchValue}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+            }}
+            placeholder="Search Quiz"
+          />
+        </div>
       </div>
       <div className="p-10 pt-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {characterChoices
@@ -51,8 +56,12 @@ export default function Home() {
               <Card className="w-full h-full p-5 flex gap-5 items-center">
                 {/* <div className="text-4xl font-bold">{choice.character}</div> */}
                 <div>
-                  <div className="text-lg font-bold">{choice.label}</div>
-                  <div className="text-lg">{choice.description}</div>
+                  <div className="text-foreground text-lg font-bold">
+                    {choice.label}
+                  </div>
+                  <div className="text-foreground text-lg">
+                    {choice.description}
+                  </div>
                 </div>
               </Card>
             </Link>
