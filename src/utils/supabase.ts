@@ -110,10 +110,10 @@ export type DeleteDataFunctionType = ({
 
 export const getCountOfATable = async (table: string) => {
   "use server";
-  const response = await supabase.from(table).select('*', { count: 'exact', head: true }).limit(1)
+  const response = await supabase.from(table).select('*', { count: 'exact', head: true }).limit(1);
 
   return response?.count as number;
-}
+};
 
 export const getAllData = async <T>(
   table: string,
@@ -134,25 +134,25 @@ export const getAllData = async <T>(
   "use server";
   let supabaseFunction = supabase
     .from(table)
-    .select(select || "*")
+    .select(select || "*");
 
   if (eq) {
     supabaseFunction = supabaseFunction
-      .eq(eq.by, eq.value)
+      .eq(eq.by, eq.value);
   }
 
   supabaseFunction = supabaseFunction
     .order(order?.by || "id", { ascending: !!order?.ascending })
-    .order("id", { ascending: true })
+    .order("id", { ascending: true });
 
   if (pagination) {
     supabaseFunction = supabaseFunction
-      .range(pagination.offset, pagination.offset + pagination.limit - 1)
+      .range(pagination.offset, pagination.offset + pagination.limit - 1);
   }
 
-  const response = await supabaseFunction
+  const response = await supabaseFunction;
 
-  console.log('full response sini', response)
+  console.log('full response sini', response);
   return response?.data as T[] | null;
 };
 

@@ -22,19 +22,19 @@ export default async function Page({
             text: string
         }[];
         kanji: string
-    }>(`${level}-only-common-words`, '*', undefined, undefined)
+    }>(`${level}-only-common-words`, '*', undefined, undefined);
 
-    const allQuestionsRandomized = randomizeArray(allData || [])
+    const allQuestionsRandomized = randomizeArray(allData || []);
 
     const possibleAnswers = allQuestionsRandomized?.map(data => data?.kana?.[0]?.text);
 
     const questions = allQuestionsRandomized?.reduce<QuestionType[]>((a, c) => {
         const correctAnswer = c?.kana?.[0]?.text;
-        const possibleWrongAnswers = possibleAnswers?.filter(a => a !== correctAnswer)
-        const firstWrongAnswerIndex = generateRandomNumber(0, possibleWrongAnswers?.length - 1)
-        let secondWrongAnswerIndex = firstWrongAnswerIndex + 1
+        const possibleWrongAnswers = possibleAnswers?.filter(a => a !== correctAnswer);
+        const firstWrongAnswerIndex = generateRandomNumber(0, possibleWrongAnswers?.length - 1);
+        let secondWrongAnswerIndex = firstWrongAnswerIndex + 1;
         if (secondWrongAnswerIndex >= possibleWrongAnswers.length) {
-            secondWrongAnswerIndex = 0
+            secondWrongAnswerIndex = 0;
         }
 
         const answers = randomizeArray([
@@ -49,22 +49,22 @@ export default async function Page({
                 answer: possibleWrongAnswers[secondWrongAnswerIndex],
                 isCorrect: false
             }
-        ])
+        ]);
         return [...a, {
             question: c?.kanji,
             answers
-        }]
-    }, [])
+        }];
+    }, []);
 
     return (
-        <QuizScreen
-            questionClassName="text-5xl xs:text-8xl"
-            answerClassName="text-xl xs:text-3xl"
-            answersContainerClassName="flex-col xs:flex-row"
-            containerClassName="pt-[168px] pb-[140px] xs:pt-0 xs:pb-0"
-            homeUrl="/kanji"
-            levelName={`Kanji ${level.toUpperCase()}`}
-            questions={questions}
+      <QuizScreen
+        questionClassName="text-5xl xs:text-8xl"
+        answerClassName="text-xl xs:text-3xl"
+        answersContainerClassName="flex-col xs:flex-row"
+        containerClassName="pt-[168px] pb-[140px] xs:pt-0 xs:pb-0"
+        homeUrl="/kanji"
+        levelName={`Kanji ${level.toUpperCase()}`}
+        questions={questions}
         />
     );
 }

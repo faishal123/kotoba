@@ -34,7 +34,7 @@ const kanjiLevelChoices = [
     href: '/kanji/n1',
     skipChooseQuestionCount: true
   },
-]
+];
 
 export default function Page() {
   return (

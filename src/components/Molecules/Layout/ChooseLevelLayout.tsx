@@ -53,10 +53,10 @@ export const LevelChoice = ({
         </div>
       </div>
     </div>
-  ))
+  ));
 
   if (level.skipChooseQuestionCount) {
-    return <Link className="focus:outline-none" href={level.href}>{trigger}</Link>
+    return <Link className="focus:outline-none" href={level.href}>{trigger}</Link>;
   }
 
   return (
