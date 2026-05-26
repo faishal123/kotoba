@@ -76,13 +76,13 @@ export type InsertNewDataFunctionType = ({
   data,
 }:
   | {
-      table: "kotoba-questions";
-      data: QuestionToUploadType[];
-    }
+    table: "kotoba-questions";
+    data: QuestionToUploadType[];
+  }
   | {
-      table: "kotoba-quiz-list";
-      data: QuizToUploadType[];
-    }) => Promise<any[] | null>;
+    table: "kotoba-quiz-list";
+    data: QuizToUploadType[];
+  }) => Promise<any[] | null>;
 
 export type EditDataFunctionType = ({
   table,
@@ -90,15 +90,15 @@ export type EditDataFunctionType = ({
   data,
 }:
   | {
-      table: "kotoba-questions";
-      id: string;
-      data: Partial<QuestionToUploadType>;
-    }
+    table: "kotoba-questions";
+    id: string;
+    data: Partial<QuestionToUploadType>;
+  }
   | {
-      table: "kotoba-quiz-list";
-      id: string;
-      data: Partial<QuizToUploadType>;
-    }) => Promise<any[] | null>;
+    table: "kotoba-quiz-list";
+    id: string;
+    data: Partial<QuizToUploadType>;
+  }) => Promise<any[] | null>;
 
 export type DeleteDataFunctionType = ({
   table,
@@ -108,7 +108,14 @@ export type DeleteDataFunctionType = ({
   id: string;
 }) => Promise<any[] | null>;
 
-export const getAllData: GetAllDataFunctionType = async <T>(
+export const getCountOfATable = async (table: string) => {
+  "use server";
+  const response = await supabase.from(table).select('*', { count: 'exact', head: true }).limit(1)
+
+  return response?.count as number;
+}
+
+export const getAllData = async <T>(
   table: string,
   select?: string,
   order?: {
@@ -118,23 +125,35 @@ export const getAllData: GetAllDataFunctionType = async <T>(
   eq?: {
     by: string;
     value: string;
+  },
+  pagination?: {
+    limit: number;
+    offset: number;
   }
 ) => {
   "use server";
-  const { data } = eq
-    ? await supabase
-        .from(table)
-        .select(select || "*")
-        .eq(eq.by, eq.value)
-        .order(order?.by || "id", { ascending: !!order?.ascending })
-        .order("id", { ascending: true })
-    : await supabase
-        .from(table)
-        .select(select || "*")
-        .order(order?.by || "id", { ascending: !!order?.ascending })
-        .order("id", { ascending: true });
+  let supabaseFunction = supabase
+    .from(table)
+    .select(select || "*")
 
-  return data as T[] | null;
+  if (eq) {
+    supabaseFunction = supabaseFunction
+      .eq(eq.by, eq.value)
+  }
+
+  supabaseFunction = supabaseFunction
+    .order(order?.by || "id", { ascending: !!order?.ascending })
+    .order("id", { ascending: true })
+
+  if (pagination) {
+    supabaseFunction = supabaseFunction
+      .range(pagination.offset, pagination.offset + pagination.limit - 1)
+  }
+
+  const response = await supabaseFunction
+
+  console.log('full response sini', response)
+  return response?.data as T[] | null;
 };
 
 export const insertNewData: InsertNewDataFunctionType = async ({
@@ -162,15 +181,15 @@ export const editData = async ({
   data,
 }:
   | {
-      table: "kotoba-questions";
-      id: string;
-      data: Partial<QuestionToUploadType>;
-    }
+    table: "kotoba-questions";
+    id: string;
+    data: Partial<QuestionToUploadType>;
+  }
   | {
-      table: "kotoba-quiz-list";
-      id: string;
-      data: Partial<QuizToUploadType>;
-    }) => {
+    table: "kotoba-quiz-list";
+    id: string;
+    data: Partial<QuizToUploadType>;
+  }) => {
   "use server";
   try {
     const { data: updatedData } = await supabase
