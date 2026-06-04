@@ -1,6 +1,7 @@
 import { QuizScreen } from "@/components/Page/QuizScreen/QuizScreen";
 import { allCharactersLevel, questionCountOptions } from "@/constant/common";
 import { hiraganaAndKatakanaLevelChoices } from "@/constant/hiraganaAndKatakanaLevelChoices";
+import { hiraganaToRomaji } from "@/constant/hiraganaToRomaji";
 import { katakanaToRomaji } from "@/constant/katakanaToRomaji";
 import { QuestionType } from "@/constant/types";
 import { generateShuffledQuestions } from "@/utils/questions";
@@ -56,15 +57,64 @@ export default async function Page({
         }];
     }, []);
 
+    const testString = "このインタビューのために時間を割いていただきありがとうございます";
+    const testStringKanaOnly = "このインタビューのためにじかんをさいていただきありがとうございます";
+
+    const allHiraganaAndKatakana = [...Object.keys(hiraganaToRomaji), ...Object.keys(katakanaToRomaji)]
+
+    let testStringBrokenDown = testString.split('').reduce<({
+        text: string; isKanji: false;
+    } | {
+        text: string; isKanji: true; kana?: string;
+    })[]>((a, c) => {
+        const isNotKanji = allHiraganaAndKatakana.includes(c);
+        const previousWords = a[a.length - 1 < 0 ? 0 : a.length - 1]
+
+        const isTheSameType = isNotKanji === !previousWords?.isKanji;
+
+        if (isTheSameType) {
+            const removeLastItemFromAccumulator = a?.filter((w, i) => i !== a.length - 1)
+            return [...removeLastItemFromAccumulator, { text: `${previousWords?.text || ""}${c}`, isKanji: !isNotKanji }]
+        }
+        return [...a, {
+            text: c, isKanji: !isNotKanji
+        }]
+    }, [])
+
+    let testStringKanaOnlyBrokenDown = testStringKanaOnly
+
+    testStringBrokenDown.forEach(item => {
+        if (!item.isKanji) {
+            testStringKanaOnlyBrokenDown = testStringKanaOnlyBrokenDown.replace(item.text, `|${item.text}|`)
+        }
+    })
+
+    const testStringKanaOnlyBrokenDownArray = testStringKanaOnlyBrokenDown.split('|').filter(n => !!n)
+
+    testStringBrokenDown = testStringBrokenDown.reduce<({
+        text: string; isKanji: false;
+    } | {
+        text: string; isKanji: true; kana?: string;
+    })[]>((a, c, i) => {
+        if (c?.isKanji) {
+            return [...a, { ...c, kana: testStringKanaOnlyBrokenDownArray?.[i] }]
+        }
+        return [...a, c]
+    }, [])
+
+    console.log({ testStringBrokenDown, testStringKanaOnlyBrokenDownArray });
+
+    // return JSON.stringify({ testStringBrokenDown, testString: testString.split('') });
+
     return (
-      <QuizScreen
-        questionClassName="text-5xl xs:text-8xl"
-        answerClassName="text-xl xs:text-3xl"
-        answersContainerClassName="flex-col xs:flex-row"
-        containerClassName="pt-[168px] pb-[140px] xs:pt-0 xs:pb-0"
-        homeUrl="/kanji"
-        levelName={`Kanji ${level.toUpperCase()}`}
-        questions={questions}
+        <QuizScreen
+            questionClassName="text-5xl xs:text-8xl"
+            answerClassName="text-xl xs:text-3xl"
+            answersContainerClassName="flex-col xs:flex-row"
+            containerClassName="pt-[168px] pb-[140px] xs:pt-0 xs:pb-0"
+            homeUrl="/kanji"
+            levelName={`Kanji ${level.toUpperCase()}`}
+            questions={questions}
         />
     );
 }
