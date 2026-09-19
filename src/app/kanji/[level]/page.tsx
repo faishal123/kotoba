@@ -124,15 +124,16 @@ export default async function Page({
   let testStringKanaOnlyBrokenDown = testStringKanaOnly;
 
   testStringBrokenDown.forEach((item) => {
-    console.log(item);
     if (!item.isKanji) {
+      console.log(item);
+      // this "replace" will replace the first instance, we need to use index instead to somehow replace the correct character
       testStringKanaOnlyBrokenDown = testStringKanaOnlyBrokenDown.replace(
         item.text,
         `|${item.text}|`,
       );
     }
   });
-
+  console.log(testStringKanaOnlyBrokenDown)
   const testStringKanaOnlyBrokenDownArray = testStringKanaOnlyBrokenDown
     .split("|")
     .filter((n) => !!n);
