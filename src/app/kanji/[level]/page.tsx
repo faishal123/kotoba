@@ -1,5 +1,6 @@
 import { QuizScreen } from "@/components/Page/QuizScreen/QuizScreen";
 import { allCharactersLevel, questionCountOptions } from "@/constant/common";
+import { kaGroup } from "@/constant/hiraganaAndKatakanaGrouped";
 import { hiraganaAndKatakanaLevelChoices } from "@/constant/hiraganaAndKatakanaLevelChoices";
 import { hiraganaToRomaji } from "@/constant/hiraganaToRomaji";
 import { katakanaToRomaji } from "@/constant/katakanaToRomaji";
@@ -68,14 +69,20 @@ export default async function Page({
     ];
   }, []);
 
-  const testString =
-    "このインタビューのために時間を割いていただきありがとうございます";
+  // const testString =
+  //   "このインタビューのために時間を割いていただきありがとうございます";
+  // const testStringKanaOnly =
+  //   "このインタビューのためにじかんをさいていただきありがとうございます";
+
+  const testString = "夕方お腹が空いたので、ちょっと間食をした";
   const testStringKanaOnly =
-    "このインタビューのためにじかんをさいていただきありがとうございます";
+    "ゆうがたおなかがすいたので、ちょっとかんしょくをした";
 
   const allHiraganaAndKatakana = [
     ...Object.keys(hiraganaToRomaji),
     ...Object.keys(katakanaToRomaji),
+    "、",
+    "。",
   ];
 
   let testStringBrokenDown = testString.split("").reduce<
@@ -95,11 +102,11 @@ export default async function Page({
     const previousWords = a[a.length - 1 < 0 ? 0 : a.length - 1];
 
     const isTheSameType = isNotKanji === !previousWords?.isKanji;
-
     if (isTheSameType) {
       const removeLastItemFromAccumulator = a?.filter(
         (w, i) => i !== a.length - 1,
       );
+
       return [
         ...removeLastItemFromAccumulator,
         { text: `${previousWords?.text || ""}${c}`, isKanji: !isNotKanji },
@@ -117,6 +124,7 @@ export default async function Page({
   let testStringKanaOnlyBrokenDown = testStringKanaOnly;
 
   testStringBrokenDown.forEach((item) => {
+    console.log(item);
     if (!item.isKanji) {
       testStringKanaOnlyBrokenDown = testStringKanaOnlyBrokenDown.replace(
         item.text,
@@ -164,11 +172,15 @@ export default async function Page({
   const randomCharacter = randomKanji?.kana?.[randomCharacterIndex];
 
   console.log({
+    testString,
+    testStringKanaOnly,
     testStringBrokenDown,
     kanjiOnly,
     randomKanji,
     randomCharacter,
   });
+
+  // console.log(Object.keys(kaGroup.hiragana))
 
   return JSON.stringify({
     testStringBrokenDown,
