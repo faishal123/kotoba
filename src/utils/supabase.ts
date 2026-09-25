@@ -14,6 +14,37 @@ export type SupabaseParticleType = {
   english?: string;
 };
 
+export interface KanjiComponent {
+  kanji: string;
+  furigana?: string;
+  romanji: string;
+  english: string;
+}
+
+export interface JapaneseToken {
+  japanese: string;
+  furigana?: string;
+  romanji: string;
+  english: string;
+  components?: KanjiComponent[];
+}
+
+export type SentenceJSON = JapaneseToken[];
+
+export type SupabaseSentenceType = {
+  id: string;
+  created_at?: string;
+  sentence_json: SentenceJSON;
+  english: string;
+  sentence: string;
+};
+
+export type SentenceToEditType = Omit<SupabaseSentenceType, "created_at">;
+export type SentenceToUploadType = Omit<
+  SupabaseSentenceType,
+  "created_at" | "id"
+>;
+
 export type SupabaseQuestionType = {
   id: string;
   created_at: string;
@@ -95,6 +126,10 @@ export type InsertNewDataFunctionType = ({
       data: QuestionToUploadType[];
     }
   | {
+      table: "sentences";
+      data: SentenceToUploadType;
+    }
+  | {
       table: "particles";
       data: ParticleToUploadType;
     }
@@ -128,7 +163,7 @@ export type DeleteDataFunctionType = ({
   table,
   id,
 }: {
-  table: "kotoba-questions" | "kotoba-quiz-list" | "particles";
+  table: "kotoba-questions" | "kotoba-quiz-list" | "particles" | "sentences";
   id: string;
 }) => Promise<any[] | null>;
 
@@ -210,6 +245,11 @@ export const editData = async ({
       table: "kotoba-questions";
       id: string;
       data: Partial<QuestionToUploadType>;
+    }
+  | {
+      table: "sentences";
+      id: string;
+      data: Partial<SentenceToUploadType>;
     }
   | {
       table: "kotoba-quiz-list";

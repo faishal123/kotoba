@@ -1,15 +1,16 @@
-import { SupabaseParticleType } from "@/utils/supabase";
+import { SentenceToUploadType } from "@/utils/supabase";
 
-export const editParticle = async (particle: SupabaseParticleType) => {
-  const res = await fetch("/api/particles", {
-    method: "PUT",
+export const createSentence = async (sentence: SentenceToUploadType) => {
+  const res = await fetch("/api/sentences", {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ particle }),
+    body: JSON.stringify({ sentence }),
   });
 
   let data = null;
+
   try {
     data = await res.json();
   } catch (e) {

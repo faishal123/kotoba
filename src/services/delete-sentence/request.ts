@@ -1,12 +1,9 @@
-import { SupabaseParticleType } from "@/utils/supabase";
-
-export const editParticle = async (particle: SupabaseParticleType) => {
-  const res = await fetch("/api/particles", {
-    method: "PUT",
+export const deleteSentence = async (id: string) => {
+  const res = await fetch(`/api/sentences?id=${id}`, {
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ particle }),
   });
 
   let data = null;

@@ -49,6 +49,7 @@ export const ParticleClientPage = () => {
                   </tr>
                   {particles?.map((particle) => (
                     <SingleParticleRow
+                      key={particle.id}
                       refetchData={refetch}
                       particle={particle}
                     />

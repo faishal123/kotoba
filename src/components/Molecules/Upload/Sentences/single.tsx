@@ -1,37 +1,35 @@
-"use client";
-
 import { FetchFunctionType } from "@/app/upload/clientPage";
 import { DialogComponent } from "@/components/Atoms/Dialog/Dialog";
 import { FormInput } from "@/components/Atoms/Form/FormInput";
+import { TableCell } from "@/components/Atoms/Table/Table";
 import { Button } from "@/components/ui/button";
+import { closeOpenedDialog } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { useCreateParticle } from "@/services/create-particle/useCreateParticle";
-import { useEditParticle } from "@/services/edit-particle/useEditParticle";
-import { ParticleToEditType, SupabaseParticleType } from "@/utils/supabase";
+import { useCreateSentence } from "@/services/create-sentence/useCreateSentence";
+import { useDeleteSentence } from "@/services/delete-sentence/useDeleteSentence";
+import { useEditSentence } from "@/services/edit-sentence/useEditSentence";
+import { SentenceToEditType, SupabaseSentenceType } from "@/utils/supabase";
 import { createStringZodSchema } from "@/utils/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PencilIcon, TrashIcon } from "lucide-react";
 import { ReactNode } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { toast } from "react-toastify";
-import { closeOpenedDialog } from "@/components/ui/dialog";
-import { TableCell } from "@/components/Atoms/Table/Table";
-import { PencilIcon, TrashIcon } from "lucide-react";
-import { useDeleteParticle } from "@/services/delete-particle/useDeleteParticle";
+import { z } from "zod";
 
 const formSchema = z.object({
-  japanese: createStringZodSchema({ required: true }),
-  romaji: createStringZodSchema({ required: true }),
-  english: createStringZodSchema(),
+  sentence: createStringZodSchema({ required: true }),
+  sentence_json: createStringZodSchema({ required: true, json: true }),
+  english: createStringZodSchema({ required: true }),
 });
 
 type FormType = z.infer<typeof formSchema>;
 
-type SingleParticleDialogPropTypes =
+type SingleSentenceDialogPropTypes =
   | {
       type: "edit";
       trigger?: ReactNode;
-      defaultValues: ParticleToEditType;
+      defaultValues: SentenceToEditType;
       refetchData: FetchFunctionType;
     }
   | {
@@ -41,21 +39,24 @@ type SingleParticleDialogPropTypes =
       refetchData: FetchFunctionType;
     };
 
-export const SingleParticleDialog = ({
+export const SingleSentenceDialog = ({
   type,
   trigger,
   defaultValues,
   refetchData,
-}: SingleParticleDialogPropTypes) => {
+}: SingleSentenceDialogPropTypes) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+      sentence_json: JSON.stringify(defaultValues?.sentence_json),
+    },
   });
 
   const isEdit = type === "edit";
 
-  const { mutateAsync: editParticle, isPending: editParticlePending } =
-    useEditParticle({
+  const { mutateAsync: editSentence, isPending: editSentencePending } =
+    useEditSentence({
       onError: (e) => {
         console.log("error oi");
         toast(e.message, { type: "error" });
@@ -64,8 +65,8 @@ export const SingleParticleDialog = ({
         toast("Particle updated successfully", { type: "success" }),
     });
 
-  const { mutateAsync: createParticle, isPending: createParticlePending } =
-    useCreateParticle({
+  const { mutateAsync: createSentence, isPending: createSentencePending } =
+    useCreateSentence({
       onError: (e) => {
         toast(e.message, { type: "error" });
       },
@@ -74,21 +75,20 @@ export const SingleParticleDialog = ({
     });
 
   const submitFunction = async (data: FormType) => {
-    if (!data.japanese || !data.romaji) {
-      toast("All fields except English are required", { type: "error" });
+    if (!data.english || !data.sentence || !data.sentence_json) {
+      toast("All fields are required", { type: "error" });
       return;
     }
-
     if (isEdit) {
-      await editParticle({
+      await editSentence({
         ...data,
-        id: defaultValues?.id || "",
-        english: data?.english ?? undefined,
+        sentence_json: JSON.parse(data?.sentence_json),
+        id: defaultValues.id || "",
       });
     } else {
-      await createParticle({
+      await createSentence({
         ...data,
-        english: data?.english ?? undefined,
+        sentence_json: JSON.parse(data?.sentence_json),
       });
     }
     form.reset();
@@ -97,35 +97,35 @@ export const SingleParticleDialog = ({
   };
 
   return (
-    <DialogComponent title={`${type} Particle`} trigger={trigger}>
+    <DialogComponent title={`${type} Sentence`} trigger={trigger}>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(submitFunction)}
           className="space-y-4"
         >
           <FormInput
-            label="Japanese"
-            name="japanese"
+            label="Sentence"
+            name="sentence"
             control={form.control}
-            placeholder="Japanese"
-            disabled={editParticlePending || createParticlePending}
-          />
-          <FormInput
-            label="Romaji"
-            name="romaji"
-            control={form.control}
-            placeholder="Romaji"
-            disabled={editParticlePending || createParticlePending}
+            placeholder="Sentence"
+            disabled={editSentencePending || createSentencePending}
           />
           <FormInput
             label="English"
             name="english"
             control={form.control}
             placeholder="English"
-            disabled={editParticlePending || createParticlePending}
+            disabled={editSentencePending || createSentencePending}
+          />
+          <FormInput
+            label="JSON"
+            name="sentence_json"
+            control={form.control}
+            placeholder="JSON"
+            disabled={editSentencePending || createSentencePending}
           />
           <Button
-            isLoading={editParticlePending || createParticlePending}
+            isLoading={editSentencePending || createSentencePending}
             type="submit"
           >
             {type.toUpperCase()}
@@ -136,25 +136,24 @@ export const SingleParticleDialog = ({
   );
 };
 
-export const SingleParticleRow = ({
-  particle,
+export const SingleSentenceRow = ({
+  sentence,
   refetchData,
 }: {
-  particle: SupabaseParticleType;
+  sentence: SupabaseSentenceType;
   refetchData: FetchFunctionType;
 }) => {
-  const { mutateAsync: deleteParticle, isPending: deleteParticlePending } =
-    useDeleteParticle({ onError: (e) => toast(e.message, { type: "error" }) });
+  const { mutateAsync: deleteSentence, isPending: deleteSentencePending } =
+    useDeleteSentence({ onError: (e) => toast(e.message, { type: "error" }) });
 
   return (
     <tr>
-      <TableCell>{particle?.japanese}</TableCell>
-      <TableCell>{particle?.romaji}</TableCell>
-      <TableCell>{particle?.english}</TableCell>
+      <TableCell>{sentence?.sentence}</TableCell>
+      <TableCell>{sentence?.english}</TableCell>
       <TableCell>
         <div className="flex gap-2">
-          <SingleParticleDialog
-            defaultValues={particle}
+          <SingleSentenceDialog
+            defaultValues={sentence}
             type="edit"
             refetchData={refetchData}
             trigger={
@@ -167,16 +166,16 @@ export const SingleParticleRow = ({
             onClick={async () => {
               if (
                 window.confirm(
-                  `Are you sure you want to delete this particle "${particle.japanese} (${particle.romaji})" ?`,
+                  `Are you sure you want to delete this particle "${sentence.sentence} (${sentence.english})" ?`,
                 )
               ) {
-                await deleteParticle(particle.id);
+                await deleteSentence(sentence.id);
                 toast("Question deleted successfully", { type: "success" });
                 await refetchData();
               }
             }}
             variant="destructive"
-            isLoading={deleteParticlePending}
+            isLoading={deleteSentencePending}
           >
             <TrashIcon className="text-foreground" size={16} />
           </Button>

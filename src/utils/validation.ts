@@ -1,15 +1,51 @@
 import { z } from "zod";
 
-export function createStringZodSchema(param: { required: true }): z.ZodString;
-export function createStringZodSchema(param?: {
-  required: false;
-}): z.ZodOptional<z.ZodNullable<z.ZodString>>;
+interface StringSchemaOptions {
+  required?: boolean;
+  json?: boolean;
+  min?: number;
+  max?: number;
+}
 
-export function createStringZodSchema(param?: { required: boolean }) {
+export function createStringZodSchema(param: {
+  required: true;
+  [key: string]: any;
+}): z.ZodType<string>;
+export function createStringZodSchema(param?: {
+  required?: false;
+  [key: string]: any;
+}): z.ZodOptional<z.ZodNullable<z.ZodType<string>>>;
+
+export function createStringZodSchema(param?: StringSchemaOptions) {
   const required = param?.required ?? false;
+  const json = param?.json ?? false;
   let stringSchema = z.string();
-  if (!required) {
-    return stringSchema.nullish();
+
+  if (param?.min !== undefined) {
+    stringSchema = stringSchema.min(param.min);
   }
-  return stringSchema;
+  if (param?.max !== undefined) {
+    stringSchema = stringSchema.max(param.max);
+  }
+
+  let finalSchema: z.ZodType<string> = stringSchema;
+  if (json) {
+    finalSchema = finalSchema.refine(
+      (val) => {
+        try {
+          JSON.parse(val);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { message: "Must be a valid JSON string" },
+    );
+  }
+
+  if (!required) {
+    return finalSchema.nullish();
+  }
+
+  return finalSchema;
 }

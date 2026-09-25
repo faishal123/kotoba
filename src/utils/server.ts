@@ -1,6 +1,13 @@
-export const checkForDuplicate = <T extends Record<string, any>, K extends T>(
+const stringifyIfObject = (param: any) => {
+  if (typeof param === "object") {
+    return JSON.stringify(param);
+  }
+  return param;
+};
+
+export const checkForDuplicate = <T extends Record<string, any>>(
   existingData: T[],
-  dataToCheck: K,
+  dataToCheck: Partial<T>,
   keysToIgnore?: (keyof T)[],
 ) => {
   const keysOfExistingObject = existingData?.reduce<string[]>((a, c) => {
@@ -19,7 +26,12 @@ export const checkForDuplicate = <T extends Record<string, any>, K extends T>(
 
   return existingData?.reduce((a, c) => {
     const currentDataExist = keysOfExistingObject?.reduce((a2, c2) => {
-      const currentKeyHasSameValue = c[c2] === dataToCheck[c2];
+      const currentValue = stringifyIfObject(c[c2]);
+      const dataToCheckValue = stringifyIfObject(dataToCheck[c2]);
+
+      const currentKeyHasSameValue = currentValue === dataToCheckValue;
+
+      console.log(currentKeyHasSameValue, currentValue, dataToCheckValue, c2);
 
       return currentKeyHasSameValue && a2;
     }, true);

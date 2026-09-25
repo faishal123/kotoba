@@ -4,16 +4,16 @@ import {
   editData,
   getAllData,
   insertNewData,
-  ParticleToEditType,
-  ParticleToUploadType,
-  SupabaseParticleType,
+  SentenceToEditType,
+  SentenceToUploadType,
+  SupabaseSentenceType,
 } from "@/utils/supabase";
 import { NextRequest } from "next/server";
 
-const validateParticle = async (
-  particle: ParticleToEditType | ParticleToUploadType,
+const validateSentence = async (
+  sentence: SentenceToEditType | SentenceToUploadType,
 ) => {
-  if (!particle) {
+  if (!sentence) {
     return {
       isValid: false,
       response: Response.json(
@@ -25,14 +25,13 @@ const validateParticle = async (
     };
   }
 
-  const allParticles =
-    (await getAllData<SupabaseParticleType>("particles")) || [];
+  const allSentences =
+    (await getAllData<SupabaseSentenceType>("sentences")) || [];
 
-  const dataAlreadyExist = checkForDuplicate(allParticles, particle, [
+  const dataAlreadyExist = checkForDuplicate(allSentences, sentence, [
     "id",
     "created_at",
   ]);
-
   if (dataAlreadyExist) {
     return {
       isValid: false,
@@ -49,27 +48,27 @@ const validateParticle = async (
 };
 
 export async function GET() {
-  const data = await getAllData("particles");
+  const data = await getAllData("sentences");
   return Response.json({ data });
 }
 
 export async function PUT(request: Request) {
   const reqBody = await request.json();
-  const particleToEdit: ParticleToEditType = reqBody?.particle;
-  try {
-    const { isValid, response } = await validateParticle(particleToEdit);
+  const sentenceToEdit: SentenceToEditType = reqBody?.sentence;
 
+  try {
+    const { isValid, response } = await validateSentence(sentenceToEdit);
     if (!isValid) {
       return response;
     }
 
     await editData({
-      table: "particles",
-      id: particleToEdit?.id,
+      table: "sentences",
+      id: sentenceToEdit?.id,
       data: {
-        japanese: particleToEdit?.japanese,
-        romaji: particleToEdit?.romaji,
-        english: particleToEdit?.english,
+        english: sentenceToEdit?.english,
+        sentence_json: sentenceToEdit?.sentence_json,
+        sentence: sentenceToEdit?.sentence,
       },
     });
   } catch (e) {
@@ -80,21 +79,20 @@ export async function PUT(request: Request) {
 
 export async function POST(request: Request) {
   const reqBody = await request.json();
-  const particleToInsert: ParticleToUploadType = reqBody?.particle;
-
+  const sentenceToInsert: SentenceToUploadType = reqBody?.sentence;
   try {
-    const { isValid, response } = await validateParticle(particleToInsert);
+    const { isValid, response } = await validateSentence(sentenceToInsert);
 
     if (!isValid) {
       return response;
     }
 
     const newData = await insertNewData({
-      table: "particles",
-      data: particleToInsert,
+      table: "sentences",
+      data: sentenceToInsert,
     });
 
-    return Response.json({ message: "Create Particle Success", body: newData });
+    return Response.json({ message: "Create Sentence Success", body: newData });
   } catch (e) {
     return Response.json(
       { message: "Error Creating Data", e },
@@ -119,7 +117,7 @@ export async function DELETE(request: NextRequest) {
     );
   }
   try {
-    await deleteData({ table: "particles", id: idToDelete });
+    await deleteData({ table: "sentences", id: idToDelete });
   } catch (error) {
     return Response.json(
       { message: "Error deleting data", error },
