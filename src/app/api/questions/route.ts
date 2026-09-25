@@ -17,7 +17,7 @@ export async function GET() {
     {
       by: "quiz_id",
       ascending: true,
-    }
+    },
   );
   return Response.json({ data });
 }
@@ -30,31 +30,31 @@ export async function PUT(request: Request) {
       { message: "Please insert valid data" },
       {
         status: 400,
-      }
+      },
     );
   }
 
   try {
     const currentQuizId = questionToEdit?.quiz_id;
-    const currentQuizQuestions = (await getAllData(
+    const currentQuizQuestions = await getAllData<SupabaseQuestionType>(
       "kotoba-questions",
       undefined,
       undefined,
       {
         by: "quiz_id",
         value: currentQuizId,
-      }
-    )) as SupabaseQuestionType[] | null;
+      },
+    );
 
     const removedDuplicate = removeDuplicateQuestions(
       currentQuizQuestions || [],
-      [questionToEdit]
+      [questionToEdit],
     );
 
     if ((removedDuplicate || []).length <= 0) {
       return Response.json(
         { message: "The data you inserted already exist" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -72,7 +72,7 @@ export async function PUT(request: Request) {
   } catch (error) {
     return Response.json(
       { message: "Error Editing data", error },
-      { status: 500 }
+      { status: 500 },
     );
   }
   return Response.json({ message: "Edit success", body: reqBody });
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
   if ((questionsToInsert || []).length <= 0) {
     return Response.json(
       { message: "Please insert valid data" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -98,18 +98,18 @@ export async function POST(request: Request) {
       {
         by: "quiz_id",
         value: currentQuizId,
-      }
+      },
     )) as SupabaseQuestionType[] | null;
 
     const removedDuplicate = removeDuplicateQuestions(
       currentQuizQuestions || [],
-      questionsToInsert
+      questionsToInsert,
     );
 
     if ((removedDuplicate || []).length <= 0) {
       return Response.json(
         { message: "The questions you inserted already exist" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -120,7 +120,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return Response.json(
       { message: "Error inserting data", error },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -139,7 +139,7 @@ export async function DELETE(request: NextRequest) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -150,7 +150,7 @@ export async function DELETE(request: NextRequest) {
       { message: "Error deleting data", error },
       {
         status: 500,
-      }
+      },
     );
   }
 

@@ -1,10 +1,15 @@
 import { z } from "zod";
 
-export const createStringZodSchema = (param?: { required?: boolean }) => {
-  const required = param?.required;
-  let stringSchema = z.string().nullish();
-  if (required) {
-    stringSchema = stringSchema.refine((val) => !!val);
+export function createStringZodSchema(param: { required: true }): z.ZodString;
+export function createStringZodSchema(param?: {
+  required: false;
+}): z.ZodOptional<z.ZodNullable<z.ZodString>>;
+
+export function createStringZodSchema(param?: { required: boolean }) {
+  const required = param?.required ?? false;
+  let stringSchema = z.string();
+  if (!required) {
+    return stringSchema.nullish();
   }
   return stringSchema;
-};
+}

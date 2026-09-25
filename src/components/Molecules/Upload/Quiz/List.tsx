@@ -1,12 +1,12 @@
 import { SingleQuizDisplay } from "./Single";
 import { SupabaseQuizType, SupabaseQuestionType } from "@/utils/supabase";
-import { FetchDataType } from "@/app/upload/clientPage";
+import { FetchFunctionType } from "@/app/upload/clientPage";
 
 export const QuizList = ({
   fetchData,
   allData,
 }: {
-  fetchData: FetchDataType;
+  fetchData: FetchFunctionType;
   allData: {
     quizzes: SupabaseQuizType[] | undefined | null;
     questions: SupabaseQuestionType[] | undefined | null;

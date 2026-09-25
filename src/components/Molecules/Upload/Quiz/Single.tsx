@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { SupabaseQuizType } from "@/utils/supabase";
 import { toast } from "react-toastify";
-import { FetchDataType } from "@/app/upload/clientPage";
+import { FetchFunctionType } from "@/app/upload/clientPage";
 import { z } from "zod";
 import { createStringZodSchema } from "@/utils/validation";
 import { useForm } from "react-hook-form";
@@ -29,12 +29,12 @@ export const SingleQuizDisplay = ({
   | {
       quiz: SupabaseQuizType;
       type: "edit";
-      refetchData: FetchDataType;
+      refetchData: FetchFunctionType;
     }
   | {
       quiz?: undefined;
       type: "create";
-      refetchData: FetchDataType;
+      refetchData: FetchFunctionType;
     }) => {
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),

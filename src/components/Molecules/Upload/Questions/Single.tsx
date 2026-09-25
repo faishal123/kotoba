@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { SupabaseQuestionType, SupabaseQuizType } from "@/utils/supabase";
 import { ReactNode } from "react";
 import { PencilIcon, TrashIcon } from "lucide-react";
-import { FetchDataType } from "@/app/upload/clientPage";
+import { FetchFunctionType } from "@/app/upload/clientPage";
 import { DialogComponent } from "@/components/Atoms/Dialog/Dialog";
 import { toast } from "react-toastify";
 import { closeOpenedDialog } from "@/components/ui/dialog";
@@ -18,6 +18,7 @@ import { FormInput } from "@/components/Atoms/Form/FormInput";
 import { FormSelect } from "@/components/Atoms/Form/FormSelect";
 import { useEditQuestion } from "@/services/edit-question/useEditQuestion";
 import { createStringZodSchema } from "@/utils/validation";
+import { TableCell } from "@/components/Atoms/Table/Table";
 
 const formSchema = z.object({
   kanji: createStringZodSchema(),
@@ -41,14 +42,14 @@ export const SingleQuestionDialog = ({
       allQuizzes?: SupabaseQuizType[];
       type: "edit";
       trigger?: ReactNode;
-      refetchData: FetchDataType;
+      refetchData: FetchFunctionType;
     }
   | {
       question?: undefined;
       allQuizzes?: SupabaseQuizType[];
       type: "create";
       trigger?: ReactNode;
-      refetchData: FetchDataType;
+      refetchData: FetchFunctionType;
     }) => {
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
@@ -64,10 +65,14 @@ export const SingleQuestionDialog = ({
   const { mutateAsync: createQuestions, isPending: createQuestionsPending } =
     useCreateQuestions({
       onError: (e) => toast(e.message, { type: "error" }),
+      onSuccess: () =>
+        toast("Question created successfully", { type: "success" }),
     });
   const { mutateAsync: editQuestion, isPending: editQuestionPending } =
     useEditQuestion({
       onError: (e) => toast(e.message, { type: "error" }),
+      onSuccess: () =>
+        toast("Question updated successfully", { type: "success" }),
     });
 
   const isEdit = type === "edit";
@@ -90,7 +95,6 @@ export const SingleQuestionDialog = ({
         quiz_id,
         question_id: question?.id,
       });
-      toast("Question updated successfully", { type: "success" });
     } else {
       await createQuestions([
         {
@@ -101,7 +105,6 @@ export const SingleQuestionDialog = ({
           quiz_id,
         },
       ]);
-      toast("Question created successfully", { type: "success" });
     }
     form.reset();
     closeOpenedDialog();
@@ -109,7 +112,7 @@ export const SingleQuestionDialog = ({
   };
 
   return (
-    <DialogComponent title="Edit Question" trigger={trigger}>
+    <DialogComponent title={`${type} Question`} trigger={trigger}>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(submitFunction)}
@@ -174,7 +177,7 @@ export const SingleQuestionRow = ({
   fetchData,
 }: {
   question: SupabaseQuestionType;
-  fetchData: FetchDataType;
+  fetchData: FetchFunctionType;
   allData: {
     quizzes: SupabaseQuizType[] | undefined | null;
     questions: SupabaseQuestionType[] | undefined | null;
@@ -186,16 +189,12 @@ export const SingleQuestionRow = ({
     });
   return (
     <tr>
-      <td className="p-2 border border-primary">{question.kanji}</td>
-      <td className="p-2 border border-primary">{question.furigana}</td>
-      <td className="p-2 border border-primary">{question.romaji}</td>
-      <td className="p-2 border border-primary">
-        {question.meaning.join(", ")}
-      </td>
-      <td className="p-2 border border-primary">
-        {question?.["kotoba-quiz-list"]?.quiz_name}
-      </td>
-      <td className="p-2 border border-primary">
+      <TableCell>{question.kanji}</TableCell>
+      <TableCell>{question.furigana}</TableCell>
+      <TableCell>{question.romaji}</TableCell>
+      <TableCell>{question.meaning.join(", ")}</TableCell>
+      <TableCell>{question?.["kotoba-quiz-list"]?.quiz_name}</TableCell>
+      <TableCell>
         <div className="flex gap-2">
           <SingleQuestionDialog
             refetchData={fetchData}
@@ -212,7 +211,7 @@ export const SingleQuestionRow = ({
             onClick={async () => {
               if (
                 window.confirm(
-                  `Are you sure you want to delete this question "${question.kanji} (${question.romaji})" ?`
+                  `Are you sure you want to delete this question "${question.kanji} (${question.romaji})" ?`,
                 )
               ) {
                 await deleteQuestion(question.id);
@@ -226,7 +225,7 @@ export const SingleQuestionRow = ({
             <TrashIcon className="text-foreground" size={16} />
           </Button>
         </div>
-      </td>
+      </TableCell>
     </tr>
   );
 };

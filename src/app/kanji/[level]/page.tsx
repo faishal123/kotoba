@@ -19,21 +19,49 @@ export default async function Page({
   const { level } = await params;
   const searchParamsResult = await searchParams;
 
+  const count = await getCountOfATable(`contain-${level}-common-words`);
+
+  const randomStart = generateRandomNumber(0, count);
+  const questionsCount = 10;
+
   const allData = await getAllData<{
     kana: {
       text: string;
     }[];
     kanji: string;
-  }>(`${level}-only-common-words`, "*", undefined, undefined);
+  }>(
+    `randomized-contain-${level}-common-words`,
+    "*",
+    undefined,
+    undefined,
+    {
+      limit: questionsCount,
+      offset: randomStart,
+    },
+    true,
+  );
 
   const allQuestionsRandomized = randomizeArray(allData || []);
 
-  const possibleAnswers = allQuestionsRandomized?.map(
-    (data) => data?.kana?.[0]?.text,
-  );
+  const possibleAnswers = allQuestionsRandomized?.reduce((a1, c1) => {
+    return [
+      ...a1,
+      c1?.sense?.reduce((a, c) => {
+        const applicableGloss = c?.gloss?.reduce((a2, c2) => {
+          if (c2.lang === "eng") {
+            return [...a2, c2.text];
+          }
+          return a2;
+        }, []);
+        return [...a, applicableGloss?.[0]];
+      }, [])?.[0],
+    ];
+  }, []);
+
+  console.log(possibleAnswers, allQuestionsRandomized);
 
   const questions = allQuestionsRandomized?.reduce<QuestionType[]>((a, c) => {
-    const correctAnswer = c?.kana?.[0]?.text;
+    const correctAnswer = c?.sense?.[0]?.gloss?.[0]?.text;
     const possibleWrongAnswers = possibleAnswers?.filter(
       (a) => a !== correctAnswer,
     );
@@ -63,130 +91,16 @@ export default async function Page({
     return [
       ...a,
       {
-        question: c?.kanji,
+        question: (
+          <ruby>
+            {c?.kanji}
+            <rt>{c?.kana?.[0]?.text}</rt>
+          </ruby>
+        ),
         answers,
       },
     ];
   }, []);
-
-  // const testString =
-  //   "このインタビューのために時間を割いていただきありがとうございます";
-  // const testStringKanaOnly =
-  //   "このインタビューのためにじかんをさいていただきありがとうございます";
-
-  const testString = "夕方お腹が空いたので、ちょっと間食をした";
-  const testStringKanaOnly =
-    "ゆうがたおなかがすいたので、ちょっとかんしょくをした";
-
-  const allHiraganaAndKatakana = [
-    ...Object.keys(hiraganaToRomaji),
-    ...Object.keys(katakanaToRomaji),
-    "、",
-    "。",
-  ];
-
-  let testStringBrokenDown = testString.split("").reduce<
-    (
-      | {
-          text: string;
-          isKanji: false;
-        }
-      | {
-          text: string;
-          isKanji: true;
-          kana?: string;
-        }
-    )[]
-  >((a, c) => {
-    const isNotKanji = allHiraganaAndKatakana.includes(c);
-    const previousWords = a[a.length - 1 < 0 ? 0 : a.length - 1];
-
-    const isTheSameType = isNotKanji === !previousWords?.isKanji;
-    if (isTheSameType) {
-      const removeLastItemFromAccumulator = a?.filter(
-        (w, i) => i !== a.length - 1,
-      );
-
-      return [
-        ...removeLastItemFromAccumulator,
-        { text: `${previousWords?.text || ""}${c}`, isKanji: !isNotKanji },
-      ];
-    }
-    return [
-      ...a,
-      {
-        text: c,
-        isKanji: !isNotKanji,
-      },
-    ];
-  }, []);
-
-  let testStringKanaOnlyBrokenDown = testStringKanaOnly;
-
-  testStringBrokenDown.forEach((item) => {
-    if (!item.isKanji) {
-      console.log(item);
-      // this "replace" will replace the first instance, we need to use index instead to somehow replace the correct character
-      testStringKanaOnlyBrokenDown = testStringKanaOnlyBrokenDown.replace(
-        item.text,
-        `|${item.text}|`,
-      );
-    }
-  });
-  console.log(testStringKanaOnlyBrokenDown)
-  const testStringKanaOnlyBrokenDownArray = testStringKanaOnlyBrokenDown
-    .split("|")
-    .filter((n) => !!n);
-
-  testStringBrokenDown = testStringBrokenDown.reduce<
-    (
-      | {
-          text: string;
-          isKanji: false;
-        }
-      | {
-          text: string;
-          isKanji: true;
-          kana?: string;
-          index?: number;
-        }
-    )[]
-  >((a, c, i) => {
-    if (c?.isKanji) {
-      return [
-        ...a,
-        { ...c, kana: testStringKanaOnlyBrokenDownArray?.[i], index: i },
-      ];
-    }
-    return [...a, c];
-  }, []);
-
-  const kanjiOnly = testStringBrokenDown.filter((item) => item.isKanji);
-  const kanjiOnlyCount = kanjiOnly?.length || 0;
-  const randomKanjiIndex = generateRandomNumber(0, kanjiOnlyCount - 1);
-  const randomKanji = kanjiOnly?.[randomKanjiIndex];
-  const randomKanjiKanaLength = randomKanji?.kana?.length || 0;
-  const randomCharacterIndex = generateRandomNumber(
-    0,
-    randomKanjiKanaLength - 1,
-  );
-  const randomCharacter = randomKanji?.kana?.[randomCharacterIndex];
-
-  console.log({
-    testString,
-    testStringKanaOnly,
-    testStringBrokenDown,
-    kanjiOnly,
-    randomKanji,
-    randomCharacter,
-  });
-
-  // console.log(Object.keys(kaGroup.hiragana))
-
-  return JSON.stringify({
-    testStringBrokenDown,
-    testString: testString.split(""),
-  });
 
   return (
     <QuizScreen

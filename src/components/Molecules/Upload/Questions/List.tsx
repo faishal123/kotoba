@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { SupabaseQuizType, SupabaseQuestionType } from "@/utils/supabase";
-import { FetchDataType } from "@/app/upload/clientPage";
+import { FetchFunctionType } from "@/app/upload/clientPage";
 import { SingleQuestionDialog, SingleQuestionRow } from "./Single";
 import { SelectComponent } from "@/components/Atoms/Select/Select";
 import { useState } from "react";
 import { UploadMultipleQuestionsDialog } from "./UploadMultipleQuestions";
+import { TableHeader } from "@/components/Atoms/Table/Table";
 
 export const QuestionsList = ({
   allData,
@@ -14,12 +15,12 @@ export const QuestionsList = ({
     quizzes: SupabaseQuizType[] | undefined | null;
     questions: SupabaseQuestionType[] | undefined | null;
   };
-  fetchData: FetchDataType;
+  fetchData: FetchFunctionType;
 }) => {
   const [quizFilter, setQuizFilter] = useState("");
   const questionsToDisplay = quizFilter
     ? (allData?.questions || [])?.filter(
-        (question) => question.quiz_id === quizFilter
+        (question) => question.quiz_id === quizFilter,
       )
     : allData.questions;
 
@@ -32,7 +33,7 @@ export const QuestionsList = ({
           triggerClassName="max-w-[300px]"
           onChange={(e) => {
             const selectedQuiz = (allData?.quizzes || [])?.find(
-              (quiz) => quiz.quiz_name === e
+              (quiz) => quiz.quiz_name === e,
             );
             if (selectedQuiz) {
               setQuizFilter(selectedQuiz.id);
@@ -63,12 +64,12 @@ export const QuestionsList = ({
       <table>
         <tbody>
           <tr>
-            <th className="border border-primary bg-gray-100 p-2">Kanji</th>
-            <th className="border border-primary bg-gray-100 p-2">Furigana</th>
-            <th className="border border-primary bg-gray-100 p-2">Romaji</th>
-            <th className="border border-primary bg-gray-100 p-2">Meaning</th>
-            <th className="border border-primary bg-gray-100 p-2">Quiz Name</th>
-            <th className="border border-primary bg-gray-100 p-2">Actions</th>
+            <TableHeader>Kanji</TableHeader>
+            <TableHeader>Furigana</TableHeader>
+            <TableHeader>Romaji</TableHeader>
+            <TableHeader>Meaning</TableHeader>
+            <TableHeader>Quiz Name</TableHeader>
+            <TableHeader>Actions</TableHeader>
           </tr>
           {questionsToDisplay?.map((question) => (
             <SingleQuestionRow

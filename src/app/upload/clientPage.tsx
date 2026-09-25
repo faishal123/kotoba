@@ -8,11 +8,11 @@ import { useGetQuestions } from "@/services/get-questions/useGetQuestions";
 import { useGetQuizzes } from "@/services/get-quizzes/useGetQuizzes";
 import { Spinner } from "@/components/ui/spinner";
 
-export type FetchDataType = () => Promise<void>;
+export type FetchFunctionType = () => Promise<void>;
 
 export const ClientPage = () => {
   const [activePage, setActivePage] = useState<"quizzes" | "questions">(
-    "questions"
+    "questions",
   );
 
   const {
@@ -26,7 +26,7 @@ export const ClientPage = () => {
     isPending: fetchQuizzesPending,
   } = useGetQuizzes();
 
-  const fetchData: FetchDataType = async () => {
+  const fetchData: FetchFunctionType = async () => {
     refetchQuestions();
     refetchQuizzes();
   };

@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { BaseQuestionType, SupabaseQuizType } from "@/utils/supabase";
-import { FetchDataType } from "@/app/upload/clientPage";
+import { FetchFunctionType } from "@/app/upload/clientPage";
 import { closeOpenedDialog } from "@/components/ui/dialog";
 import { useCreateQuestions } from "@/services/create-questions/useCreateQuestions";
 import { toast } from "react-toastify";
@@ -17,7 +17,7 @@ export const UploadMultipleQuestionsDialog = ({
 }: {
   trigger: ReactNode;
   allQuizzes: SupabaseQuizType[];
-  fetchData: FetchDataType;
+  fetchData: FetchFunctionType;
 }) => {
   const [value, setValue] = useState({
     quiz: "",
@@ -86,7 +86,7 @@ export const UploadMultipleQuestionsDialog = ({
               isLoading={createQuestionsPending}
               onClick={async () => {
                 const quizSelected = allQuizzes.find(
-                  (q) => q.quiz_name === value.quiz
+                  (q) => q.quiz_name === value.quiz,
                 );
                 if (!quizSelected) {
                   return;
@@ -99,7 +99,7 @@ export const UploadMultipleQuestionsDialog = ({
                     meaning: question?.meaning,
                     romaji: question?.romaji,
                     quiz_id: quizSelected.id,
-                  })
+                  }),
                 );
 
                 await createQuestions(questionsToInsert);

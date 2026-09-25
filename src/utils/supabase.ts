@@ -6,6 +6,14 @@ const supabaseUrl = process.env.SUPABASE_URL || "";
 const supabaseKey = process.env.SUPABASE_API_KEY || "";
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
+export type SupabaseParticleType = {
+  id: string;
+  created_at?: string;
+  japanese: string;
+  romaji: string;
+  english?: string;
+};
+
 export type SupabaseQuestionType = {
   id: string;
   created_at: string;
@@ -54,6 +62,13 @@ export type QuizToUploadType = {
   description: string;
 };
 
+export type ParticleToUploadType = Omit<
+  SupabaseParticleType,
+  "created_at" | "id"
+>;
+
+export type ParticleToEditType = Omit<SupabaseParticleType, "created_at">;
+
 export interface QuizToEditType extends QuizToUploadType {
   quiz_id: string;
 }
@@ -68,7 +83,7 @@ export type GetAllDataFunctionType = <T>(
   eq?: {
     by: string;
     value: string;
-  }
+  },
 ) => Promise<T[] | null>;
 
 export type InsertNewDataFunctionType = ({
@@ -76,13 +91,17 @@ export type InsertNewDataFunctionType = ({
   data,
 }:
   | {
-    table: "kotoba-questions";
-    data: QuestionToUploadType[];
-  }
+      table: "kotoba-questions";
+      data: QuestionToUploadType[];
+    }
   | {
-    table: "kotoba-quiz-list";
-    data: QuizToUploadType[];
-  }) => Promise<any[] | null>;
+      table: "particles";
+      data: ParticleToUploadType;
+    }
+  | {
+      table: "kotoba-quiz-list";
+      data: QuizToUploadType[];
+    }) => Promise<any[] | null>;
 
 export type EditDataFunctionType = ({
   table,
@@ -90,27 +109,35 @@ export type EditDataFunctionType = ({
   data,
 }:
   | {
-    table: "kotoba-questions";
-    id: string;
-    data: Partial<QuestionToUploadType>;
-  }
+      table: "kotoba-questions";
+      id: string;
+      data: Partial<QuestionToUploadType>;
+    }
   | {
-    table: "kotoba-quiz-list";
-    id: string;
-    data: Partial<QuizToUploadType>;
-  }) => Promise<any[] | null>;
+      table: "particles";
+      id: string;
+      data: Partial<ParticleToUploadType>;
+    }
+  | {
+      table: "kotoba-quiz-list";
+      id: string;
+      data: Partial<QuizToUploadType>;
+    }) => Promise<any[] | null>;
 
 export type DeleteDataFunctionType = ({
   table,
   id,
 }: {
-  table: "kotoba-questions" | "kotoba-quiz-list";
+  table: "kotoba-questions" | "kotoba-quiz-list" | "particles";
   id: string;
 }) => Promise<any[] | null>;
 
 export const getCountOfATable = async (table: string) => {
   "use server";
-  const response = await supabase.from(table).select('*', { count: 'exact', head: true }).limit(1);
+  const response = await supabase
+    .from(table)
+    .select("*", { count: "exact", head: true })
+    .limit(1);
 
   return response?.count as number;
 };
@@ -129,39 +156,38 @@ export const getAllData = async <T>(
   pagination?: {
     limit: number;
     offset: number;
-  }
+  },
+  randomized?: boolean,
 ) => {
   "use server";
-  let supabaseFunction = supabase
-    .from(table)
-    .select(select || "*");
+  let supabaseFunction = supabase.from(table).select(select || "*");
 
   if (eq) {
-    supabaseFunction = supabaseFunction
-      .eq(eq.by, eq.value);
+    supabaseFunction = supabaseFunction.eq(eq.by, eq.value);
   }
 
-  supabaseFunction = supabaseFunction
-    .order(order?.by || "id", { ascending: !!order?.ascending })
-    .order("id", { ascending: true });
+  if (!randomized) {
+    supabaseFunction = supabaseFunction
+      .order(order?.by || "id", { ascending: !!order?.ascending })
+      .order("id", { ascending: true });
+  }
 
   if (pagination) {
-    supabaseFunction = supabaseFunction
-      .range(pagination.offset, pagination.offset + pagination.limit - 1);
+    supabaseFunction = supabaseFunction.range(
+      pagination.offset,
+      pagination.offset + pagination.limit - 1,
+    );
   }
 
   const response = await supabaseFunction;
 
-  console.log('full response sini', response);
   return response?.data as T[] | null;
 };
 
 export const insertNewData: InsertNewDataFunctionType = async ({
   table,
   data,
-}:
-  | { table: "kotoba-questions"; data: QuestionToUploadType[] }
-  | { table: "kotoba-quiz-list"; data: QuizToUploadType[] }) => {
+}) => {
   "use server";
   try {
     const { data: insertedData } = await supabase
@@ -181,15 +207,20 @@ export const editData = async ({
   data,
 }:
   | {
-    table: "kotoba-questions";
-    id: string;
-    data: Partial<QuestionToUploadType>;
-  }
+      table: "kotoba-questions";
+      id: string;
+      data: Partial<QuestionToUploadType>;
+    }
   | {
-    table: "kotoba-quiz-list";
-    id: string;
-    data: Partial<QuizToUploadType>;
-  }) => {
+      table: "kotoba-quiz-list";
+      id: string;
+      data: Partial<QuizToUploadType>;
+    }
+  | {
+      table: "particles";
+      id: string;
+      data: Partial<ParticleToUploadType>;
+    }) => {
   "use server";
   try {
     const { data: updatedData } = await supabase
@@ -203,13 +234,7 @@ export const editData = async ({
   }
 };
 
-export const deleteData: DeleteDataFunctionType = async ({
-  table,
-  id,
-}: {
-  table: "kotoba-questions" | "kotoba-quiz-list";
-  id: string;
-}) => {
+export const deleteData: DeleteDataFunctionType = async ({ table, id }) => {
   "use server";
   try {
     const { data: deletedData } = await supabase
@@ -225,7 +250,7 @@ export const deleteData: DeleteDataFunctionType = async ({
 
 export const removeDuplicateQuestions = (
   existingData: SupabaseQuestionType[] | null,
-  dataToUpload: QuestionToUploadType[]
+  dataToUpload: QuestionToUploadType[],
 ) => {
   return dataToUpload.reduce<QuestionToUploadType[]>((a, c) => {
     const currentItemExist = (existingData || []).reduce<boolean>((a2, c2) => {
