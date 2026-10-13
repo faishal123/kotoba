@@ -14,22 +14,23 @@ export type SupabaseParticleType = {
   english?: string;
 };
 
-export interface KanjiComponent {
+export interface WordComponent {
   kanji: string;
   furigana?: string;
-  romanji: string;
-  english: string;
+  romaji: string;
+  english?: string;
 }
 
-export interface JapaneseToken {
-  japanese: string;
+export interface SentenceWord {
+  romaji: string;
+  english: string;
   furigana?: string;
-  romanji: string;
-  english: string;
-  components?: KanjiComponent[];
+  japanese: string;
+  components?: WordComponent[];
 }
 
-export type SentenceJSON = JapaneseToken[];
+export type SentenceJSON = SentenceWord[];
+export type PartialSentenceJSON = Partial<SentenceWord>[];
 
 export type SupabaseSentenceType = {
   id: string;

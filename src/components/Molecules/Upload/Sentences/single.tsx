@@ -8,7 +8,13 @@ import { Form } from "@/components/ui/form";
 import { useCreateSentence } from "@/services/create-sentence/useCreateSentence";
 import { useDeleteSentence } from "@/services/delete-sentence/useDeleteSentence";
 import { useEditSentence } from "@/services/edit-sentence/useEditSentence";
-import { SentenceToEditType, SupabaseSentenceType } from "@/utils/supabase";
+import { SentenceInputRenderer } from "@/utils/sentenceRenderer";
+import {
+  SentenceJSON,
+  SentenceToEditType,
+  SupabaseSentenceType,
+  WordComponent,
+} from "@/utils/supabase";
 import { createStringZodSchema } from "@/utils/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PencilIcon, TrashIcon } from "lucide-react";
@@ -16,9 +22,11 @@ import { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
+import { capitalizeFirstLetter } from "@/utils/common";
+
+const exampleJson: WordComponent[] = [];
 
 const formSchema = z.object({
-  sentence: createStringZodSchema({ required: true }),
   sentence_json: createStringZodSchema({ required: true, json: true }),
   english: createStringZodSchema({ required: true }),
 });
@@ -48,8 +56,8 @@ export const SingleSentenceDialog = ({
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      ...defaultValues,
-      sentence_json: JSON.stringify(defaultValues?.sentence_json),
+      english: defaultValues?.english || "",
+      sentence_json: "[]",
     },
   });
 
@@ -58,11 +66,12 @@ export const SingleSentenceDialog = ({
   const { mutateAsync: editSentence, isPending: editSentencePending } =
     useEditSentence({
       onError: (e) => {
-        console.log("error oi");
         toast(e.message, { type: "error" });
       },
-      onSuccess: () =>
-        toast("Particle updated successfully", { type: "success" }),
+      onSuccess: () => {
+        closeOpenedDialog();
+        toast("Particle updated successfully", { type: "success" });
+      },
     });
 
   const { mutateAsync: createSentence, isPending: createSentencePending } =
@@ -70,46 +79,68 @@ export const SingleSentenceDialog = ({
       onError: (e) => {
         toast(e.message, { type: "error" });
       },
-      onSuccess: () =>
-        toast("Particle created successfully", { type: "success" }),
+      onSuccess: () => {
+        closeOpenedDialog();
+        toast("Particle created successfully", { type: "success" });
+      },
     });
 
   const submitFunction = async (data: FormType) => {
-    if (!data.english || !data.sentence || !data.sentence_json) {
+    let sentenceJson: SentenceJSON = [];
+    try {
+      sentenceJson = JSON.parse(data?.sentence_json);
+    } catch {
+      toast("Please enter valid JSON", { type: "error" });
+      return;
+    }
+    const sentenceJapanese = sentenceJson?.reduce((a, c) => {
+      return `${a}${c?.japanese || ""}`;
+    }, "");
+    if (!data.english || sentenceJson.length <= 0 || !sentenceJapanese) {
       toast("All fields are required", { type: "error" });
       return;
     }
+    console.log({
+      english: data?.english,
+      sentence_json: data?.sentence_json,
+      sentence: sentenceJapanese,
+    });
     if (isEdit) {
       await editSentence({
-        ...data,
-        sentence_json: JSON.parse(data?.sentence_json),
-        id: defaultValues.id || "",
+        id: defaultValues?.id || "",
+        english: data?.english,
+        sentence_json: sentenceJson,
+        sentence: sentenceJapanese,
       });
     } else {
       await createSentence({
-        ...data,
-        sentence_json: JSON.parse(data?.sentence_json),
+        english: data?.english,
+        sentence_json: sentenceJson,
+        sentence: sentenceJapanese,
       });
     }
     form.reset();
-    closeOpenedDialog();
+
     await refetchData();
   };
 
   return (
-    <DialogComponent title={`${type} Sentence`} trigger={trigger}>
+    <DialogComponent
+      title={`${capitalizeFirstLetter(type)} Sentence`}
+      trigger={trigger}
+    >
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(submitFunction)}
-          className="space-y-4"
+          className="space-y-4 max-h-[80vh] overflow-auto"
         >
-          <FormInput
+          {/* <FormInput
             label="Sentence"
             name="sentence"
             control={form.control}
             placeholder="Sentence"
             disabled={editSentencePending || createSentencePending}
-          />
+          /> */}
           <FormInput
             label="English"
             name="english"
@@ -117,18 +148,27 @@ export const SingleSentenceDialog = ({
             placeholder="English"
             disabled={editSentencePending || createSentencePending}
           />
-          <FormInput
+          {/* <FormInput
             label="JSON"
             name="sentence_json"
             control={form.control}
             placeholder="JSON"
             disabled={editSentencePending || createSentencePending}
+          /> */}
+          {/* <SentenceRenderer sentence={exampleJson} /> */}
+          <SentenceInputRenderer
+            control={form.control}
+            name="sentence_json"
+            defaultSentence={exampleJson}
+            setValue={(value) => {
+              form.setValue("sentence_json", value);
+            }}
           />
           <Button
             isLoading={editSentencePending || createSentencePending}
             type="submit"
           >
-            {type.toUpperCase()}
+            {capitalizeFirstLetter(type)}
           </Button>
         </form>
       </Form>

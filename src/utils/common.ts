@@ -2,6 +2,15 @@
 
 import { useState, useEffect } from "react";
 
+export const capitalizeFirstLetter = (param: string) => {
+  return param.split("").reduce((a, c, i) => {
+    if (i === 0) {
+      return c?.toUpperCase();
+    }
+    return `${a}${c}`;
+  }, "");
+};
+
 export function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
     width: typeof window !== "undefined" ? window.innerWidth : 0,
