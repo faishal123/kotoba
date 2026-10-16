@@ -1,4 +1,4 @@
-const countries = [
+export const countries = [
   {
     "Country (Indonesian)": "Amerika Serikat",
     "Country (Japanese)": "アメリカ",
@@ -1318,7 +1318,7 @@ export const kataKerjaPart8 = [
   },
 ];
 
-const kataKerjaPart9 = [
+export const kataKerjaPart9 = [
   {
     romaji: "norimasu",
     furigana: "のります",
@@ -1385,7 +1385,7 @@ const kataKerjaPart9 = [
   },
 ];
 
-const kataKerjaPart10 = [
+export const kataKerjaPart10 = [
   {
     romaji: "omoimasu",
     furigana: "思います",
@@ -1468,7 +1468,7 @@ const kataKerjaPart10 = [
   },
 ];
 
-const kataKerjaPart11 = [
+export const kataKerjaPart11 = [
   {
     romaji: "shatsu o kimasu",
     furigana: "シャツをきます",
@@ -1527,7 +1527,7 @@ const kataKerjaPart11 = [
   },
 ];
 
-const kataKerjaPart12 = [
+export const kataKerjaPart12 = [
   {
     romaji: "sensei ni kikimasu",
     furigana: "先生に聞きます",
@@ -1626,7 +1626,7 @@ const kataKerjaPart12 = [
   },
 ];
 
-const kataKerjaPart13 = [
+export const kataKerjaPart13 = [
   {
     romaji: "agemasu",
     furigana: "あげます",

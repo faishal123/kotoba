@@ -46,6 +46,12 @@ const eslintConfig = [
       "react/jsx-indent-props": ["error", 2],
     },
   },
+  {
+    files: ["**/next-env.d.ts"],
+    rules: {
+      "@typescript-eslint/triple-slash-reference": "off",
+    },
+  },
 ];
 
 export default eslintConfig;

@@ -1,11 +1,11 @@
-const stringifyIfObject = (param: any) => {
+const stringifyIfObject = (param: unknown) => {
   if (typeof param === "object") {
     return JSON.stringify(param);
   }
   return param;
 };
 
-export const checkForDuplicate = <T extends Record<string, any>>(
+export const checkForDuplicate = <T extends Record<string, unknown>>(
   existingData: T[],
   dataToCheck: Partial<T>,
   keysToIgnore?: (keyof T)[],

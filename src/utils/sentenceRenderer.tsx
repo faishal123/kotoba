@@ -1,10 +1,10 @@
 import { ChangeEvent, ReactNode, useEffect, useState } from "react";
 import {
-  PartialSentenceJSON,
   SentenceJSON,
   SentenceWord,
   WordComponent,
-} from "./supabase";
+  PartialSentenceJSON,
+} from "@/models/sentence";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Control, FieldValues, Path } from "react-hook-form";
@@ -63,13 +63,13 @@ export const SentenceRenderer = ({
     const hasComponents = (t?.components || [])?.length > 0;
     if (hasComponents && showFurigana) {
       return t?.components?.map((c) => (
-        <ruby>
+        <ruby key={`${c?.furigana}${c?.kanji}`}>
           {c?.kanji}
           <rt>{c?.furigana}</rt>
         </ruby>
       ));
     }
-    return <span>{t?.japanese}</span>;
+    return <span key={`${t?.furigana}${t?.japanese}`}>{t?.japanese}</span>;
   });
 };
 
@@ -179,7 +179,7 @@ const SingleWord = ({
   onDeleteInput: OnDeleteInputType;
 }) => {
   const showInput = word?.showInput;
-  const id = word?.id;
+  // const id = word?.id;
 
   const onChange = (
     e: ChangeEvent<HTMLInputElement>,
@@ -198,6 +198,7 @@ const SingleWord = ({
     return [
       ...a,
       <SingleComponent
+        key={`${c.kanji}${i}`}
         onDeleteInput={onDeleteInput}
         onChangeInput={onChangeInput}
         index={i}
@@ -206,7 +207,12 @@ const SingleWord = ({
       />,
       ...(i + 1 === components?.length
         ? []
-        : [<div className="w-full border-b border-gray-300 pt-[4px]"></div>]),
+        : [
+          <div
+            key={i}
+            className="w-full border-b border-gray-300 pt-[4px]"
+            ></div>,
+          ]),
     ];
   }, []);
 

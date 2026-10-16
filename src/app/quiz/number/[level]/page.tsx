@@ -1,6 +1,6 @@
 import { QuizScreen } from "@/components/Page/QuizScreen/QuizScreen";
 import { numbers } from "@/constant/numbers";
-import { AnswerType, QuestionType } from "@/constant/types";
+import { QuestionType } from "@/constant/types";
 import { generateRandomNumber, randomizeArray } from "@/utils/serverUtils";
 
 export default async function Page({
@@ -19,7 +19,7 @@ export default async function Page({
   const possibleQuestions = randomizeArray(
     Array.from(Array(multiplyFactor).keys()).flatMap(() => {
       return numbers;
-    })
+    }),
   );
 
   const questions = possibleQuestions
@@ -28,11 +28,11 @@ export default async function Page({
       let question: string;
       const correctAnswer = c.romaji;
       const possibleWrongAnswers = possibleNumberAnswers.filter(
-        (a) => a !== correctAnswer
+        (a) => a !== correctAnswer,
       );
       const firstWrongAnswerIndex = generateRandomNumber(
         0,
-        possibleWrongAnswers.length - 1
+        possibleWrongAnswers.length - 1,
       );
       let secondWrongAnswerIndex = firstWrongAnswerIndex + 1;
       if (secondWrongAnswerIndex >= possibleWrongAnswers.length) {

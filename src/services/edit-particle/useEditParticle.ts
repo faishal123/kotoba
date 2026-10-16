@@ -1,6 +1,6 @@
 import { MutationFunctionContext, useMutation } from "@tanstack/react-query";
 import { editParticle } from "./request";
-import { ParticleToEditType } from "@/utils/supabase";
+import { ParticleToEditType } from "@/models/particle";
 
 export const useEditParticle = (params?: {
   onSuccess?:

@@ -1,4 +1,4 @@
-import { SupabaseSentenceType } from "@/utils/supabase";
+import { SupabaseSentenceType } from "@/models/sentence";
 
 export const editSentence = async (sentence: SupabaseSentenceType) => {
   const res = await fetch("/api/sentences", {

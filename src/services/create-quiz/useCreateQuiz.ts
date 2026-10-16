@@ -1,6 +1,6 @@
 import { MutationFunctionContext, useMutation } from "@tanstack/react-query";
 import { createQuiz } from "./request";
-import { QuizToUploadType } from "@/utils/supabase";
+import { QuizToUploadType } from "@/models/quiz";
 
 export const useCreateQuiz = (params?: {
   onSuccess?:
@@ -8,7 +8,7 @@ export const useCreateQuiz = (params?: {
         data: Response,
         variables: QuizToUploadType,
         onMutateResult: unknown,
-        context: MutationFunctionContext
+        context: MutationFunctionContext,
       ) => Promise<unknown> | unknown)
     | undefined;
   onError?:
@@ -16,7 +16,7 @@ export const useCreateQuiz = (params?: {
         error: Error,
         variables: QuizToUploadType,
         onMutateResult: unknown,
-        context: MutationFunctionContext
+        context: MutationFunctionContext,
       ) => Promise<unknown> | unknown)
     | undefined;
 }) => {

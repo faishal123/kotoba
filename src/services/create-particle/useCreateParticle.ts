@@ -1,6 +1,6 @@
 import { MutationFunctionContext, useMutation } from "@tanstack/react-query";
 import { createParticle } from "./request";
-import { ParticleToUploadType } from "@/utils/supabase";
+import { ParticleToUploadType } from "@/models/particle";
 
 export const useCreateParticle = (params?: {
   onSuccess?:

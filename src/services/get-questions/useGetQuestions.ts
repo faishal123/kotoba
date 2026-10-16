@@ -1,4 +1,4 @@
-import { SupabaseQuestionType } from "@/utils/supabase";
+import { SupabaseQuestionType } from "@/models/question";
 import { useQuery } from "@tanstack/react-query";
 import { getQuestions } from "./request";
 

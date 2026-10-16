@@ -1,4 +1,4 @@
-import { QuestionToEditType } from "@/utils/supabase";
+import { QuestionToEditType } from "@/models/question";
 
 export const editQuestion = async (question: QuestionToEditType) => {
   const res = await fetch("/api/questions", {

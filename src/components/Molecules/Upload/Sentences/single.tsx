@@ -14,7 +14,7 @@ import {
   SentenceToEditType,
   SupabaseSentenceType,
   WordComponent,
-} from "@/utils/supabase";
+} from "@/models/sentence";
 import { createStringZodSchema } from "@/utils/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PencilIcon, TrashIcon } from "lucide-react";

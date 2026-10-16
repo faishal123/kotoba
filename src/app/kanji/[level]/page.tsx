@@ -1,53 +1,49 @@
 import { QuizScreen } from "@/components/Page/QuizScreen/QuizScreen";
-import { allCharactersLevel, questionCountOptions } from "@/constant/common";
-import { kaGroup } from "@/constant/hiraganaAndKatakanaGrouped";
-import { hiraganaAndKatakanaLevelChoices } from "@/constant/hiraganaAndKatakanaLevelChoices";
-import { hiraganaToRomaji } from "@/constant/hiraganaToRomaji";
-import { katakanaToRomaji } from "@/constant/katakanaToRomaji";
+// import { allCharactersLevel, questionCountOptions } from "@/constant/common";
+// import { kaGroup } from "@/constant/hiraganaAndKatakanaGrouped";
+// import { hiraganaAndKatakanaLevelChoices } from "@/constant/hiraganaAndKatakanaLevelChoices";
+// import { hiraganaToRomaji } from "@/constant/hiraganaToRomaji";
+// import { katakanaToRomaji } from "@/constant/katakanaToRomaji";
 import { QuestionType } from "@/constant/types";
-import { generateShuffledQuestions } from "@/utils/questions";
+import { SupabaseKanjiType } from "@/models/kanji";
+// import { generateShuffledQuestions } from "@/utils/questions";
 import { generateRandomNumber, randomizeArray } from "@/utils/serverUtils";
 import { getAllData, getCountOfATable } from "@/utils/supabase";
 
 export default async function Page({
   params,
-  searchParams,
 }: {
   params: Promise<{ level: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { level } = await params;
-  const searchParamsResult = await searchParams;
+  // const searchParamsResult = await searchParams;
 
   const count = await getCountOfATable(`contain-${level}-common-words`);
 
   const randomStart = generateRandomNumber(0, count);
   const questionsCount = 10;
 
-  const allData = await getAllData<{
-    kana: {
-      text: string;
-    }[];
-    kanji: string;
-  }>(
-    `randomized-contain-${level}-common-words`,
-    "*",
-    undefined,
-    undefined,
-    {
-      limit: questionsCount,
-      offset: randomStart,
-    },
-    true,
-  );
+  const allData =
+    (await getAllData<SupabaseKanjiType>(
+      `randomized-contain-${level}-common-words`,
+      "*",
+      undefined,
+      undefined,
+      {
+        limit: questionsCount,
+        offset: randomStart,
+      },
+      true,
+    )) || [];
 
   const allQuestionsRandomized = randomizeArray(allData || []);
 
-  const possibleAnswers = allQuestionsRandomized?.reduce((a1, c1) => {
+  const possibleAnswers = allQuestionsRandomized?.reduce<string[]>((a1, c1) => {
     return [
       ...a1,
-      c1?.sense?.reduce((a, c) => {
-        const applicableGloss = c?.gloss?.reduce((a2, c2) => {
+      c1?.sense?.reduce<string[]>((a, c) => {
+        const applicableGloss = c?.gloss?.reduce<string[]>((a2, c2) => {
           if (c2.lang === "eng") {
             return [...a2, c2.text];
           }
@@ -57,8 +53,6 @@ export default async function Page({
       }, [])?.[0],
     ];
   }, []);
-
-  console.log(possibleAnswers, allQuestionsRandomized);
 
   const questions = allQuestionsRandomized?.reduce<QuestionType[]>((a, c) => {
     const correctAnswer = c?.sense?.[0]?.gloss?.[0]?.text;

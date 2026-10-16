@@ -4,10 +4,12 @@ import {
   editData,
   getAllData,
   insertNewData,
+} from "@/utils/supabase";
+import {
   SentenceToEditType,
   SentenceToUploadType,
   SupabaseSentenceType,
-} from "@/utils/supabase";
+} from "@/models/sentence";
 import { NextRequest } from "next/server";
 
 const validateSentence = async (

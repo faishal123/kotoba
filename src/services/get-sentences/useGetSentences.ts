@@ -1,4 +1,4 @@
-import { SupabaseSentenceType } from "@/utils/supabase";
+import { SupabaseSentenceType } from "@/models/sentence";
 import { useQuery } from "@tanstack/react-query";
 import { getSentences } from "./request";
 

@@ -3,11 +3,13 @@ import {
   editData,
   getAllData,
   insertNewData,
+  removeDuplicateQuestions,
+} from "@/utils/supabase";
+import {
   QuestionToEditType,
   QuestionToUploadType,
-  removeDuplicateQuestions,
   SupabaseQuestionType,
-} from "@/utils/supabase";
+} from "@/models/question";
 import { NextRequest } from "next/server";
 
 export async function GET() {

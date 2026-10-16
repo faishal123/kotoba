@@ -1,5 +1,6 @@
 import { SingleQuizDisplay } from "./Single";
-import { SupabaseQuizType, SupabaseQuestionType } from "@/utils/supabase";
+import { SupabaseQuestionType } from "@/models/question";
+import { SupabaseQuizType } from "@/models/quiz";
 import { FetchFunctionType } from "@/app/upload/clientPage";
 
 export const QuizList = ({

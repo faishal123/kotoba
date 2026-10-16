@@ -1,4 +1,4 @@
-import { SupabaseParticleType } from "@/utils/supabase";
+import { SupabaseParticleType } from "@/models/particle";
 
 export const editParticle = async (particle: SupabaseParticleType) => {
   const res = await fetch("/api/particles", {

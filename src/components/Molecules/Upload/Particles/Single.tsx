@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useCreateParticle } from "@/services/create-particle/useCreateParticle";
 import { useEditParticle } from "@/services/edit-particle/useEditParticle";
-import { ParticleToEditType, SupabaseParticleType } from "@/utils/supabase";
+import { ParticleToEditType, SupabaseParticleType } from "@/models/particle";
 import { createStringZodSchema } from "@/utils/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ReactNode } from "react";

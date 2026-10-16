@@ -67,7 +67,7 @@ export const breakDownKanji = ({
 }: {
   originalText: string; kanaText: string;
 }) => {
-  const allHiraganaAndKatakana = [...Object.keys(hiraganaToRomaji), ...Object.keys(katakanaToRomaji)]
+  const allHiraganaAndKatakana = [...Object.keys(hiraganaToRomaji), ...Object.keys(katakanaToRomaji)];
 
   let originalTextBrokenDown = originalText.split('').reduce<({
     text: string; isKanji: false;
@@ -75,28 +75,28 @@ export const breakDownKanji = ({
     text: string; isKanji: true; kana?: string;
   })[]>((a, c) => {
     const isNotKanji = allHiraganaAndKatakana.includes(c);
-    const previousWords = a[a.length - 1 < 0 ? 0 : a.length - 1]
+    const previousWords = a[a.length - 1 < 0 ? 0 : a.length - 1];
 
     const isTheSameType = isNotKanji === !previousWords?.isKanji;
 
     if (isTheSameType) {
-      const removeLastItemFromAccumulator = a?.filter((w, i) => i !== a.length - 1)
-      return [...removeLastItemFromAccumulator, { text: `${previousWords?.text || ""}${c}`, isKanji: !isNotKanji }]
+      const removeLastItemFromAccumulator = a?.filter((w, i) => i !== a.length - 1);
+      return [...removeLastItemFromAccumulator, { text: `${previousWords?.text || ""}${c}`, isKanji: !isNotKanji }];
     }
     return [...a, {
       text: c, isKanji: !isNotKanji
-    }]
-  }, [])
+    }];
+  }, []);
 
-  let kanaTextOnlyBrokenDown = kanaText
+  let kanaTextOnlyBrokenDown = kanaText;
 
   originalTextBrokenDown.forEach(item => {
     if (!item.isKanji) {
-      kanaTextOnlyBrokenDown = kanaTextOnlyBrokenDown.replace(item.text, `|${item.text}|`)
+      kanaTextOnlyBrokenDown = kanaTextOnlyBrokenDown.replace(item.text, `|${item.text}|`);
     }
-  })
+  });
 
-  const kanaTextOnlyBrokenDownArray = kanaTextOnlyBrokenDown.split('|').filter(n => !!n)
+  const kanaTextOnlyBrokenDownArray = kanaTextOnlyBrokenDown.split('|').filter(n => !!n);
 
   originalTextBrokenDown = originalTextBrokenDown.reduce<({
     text: string; isKanji: false;
@@ -104,10 +104,10 @@ export const breakDownKanji = ({
     text: string; isKanji: true; kana?: string;
   })[]>((a, c, i) => {
     if (c?.isKanji) {
-      return [...a, { ...c, kana: kanaTextOnlyBrokenDownArray?.[i] }]
+      return [...a, { ...c, kana: kanaTextOnlyBrokenDownArray?.[i] }];
     }
-    return [...a, c]
-  }, [])
+    return [...a, c];
+  }, []);
 
-  return originalTextBrokenDown
-}
+  return originalTextBrokenDown;
+};

@@ -7,11 +7,9 @@ import {
   randomizeArray,
   removeDuplicates,
 } from "@/utils/serverUtils";
-import {
-  getAllData,
-  SupabaseAvailableQuizViewType,
-  SupabaseQuestionType,
-} from "@/utils/supabase";
+import { getAllData } from "@/utils/supabase";
+import { SupabaseAvailableQuizViewType } from "@/models/availableQuiz";
+import { SupabaseQuestionType } from "@/models/question";
 
 export default async function Page({
   searchParams,
@@ -30,7 +28,7 @@ export default async function Page({
     | SupabaseAvailableQuizViewType[]
     | null;
   const selectedQuizzes = allQuizzes?.filter(
-    (quiz) => quizzes.includes(quiz.quiz_name) && quiz.question_count > 0
+    (quiz) => quizzes.includes(quiz.quiz_name) && quiz.question_count > 0,
   );
 
   const questionsPromise = selectedQuizzes?.map(async (quiz) => {
@@ -41,7 +39,7 @@ export default async function Page({
       {
         by: "quiz_id",
         value: quiz.id,
-      }
+      },
     );
     return {
       quizName: quiz.quiz_name,
@@ -55,7 +53,7 @@ export default async function Page({
     Record<string, string[]>
   >((a, c) => {
     const answers = removeDuplicates(
-      c?.questions?.flatMap((q) => q.meaning) || []
+      c?.questions?.flatMap((q) => q.meaning) || [],
     );
     return {
       ...a,
@@ -82,12 +80,12 @@ export default async function Page({
 
         const possibleWrongAnswers = randomizeArray(
           possibleAnswers?.[c.quizName].filter(
-            (a) => !correctAnswerArray.includes(a)
-          )
+            (a) => !correctAnswerArray.includes(a),
+          ),
         );
         const firstWrongAnswerIndex = generateRandomNumber(
           0,
-          possibleWrongAnswers.length - 1
+          possibleWrongAnswers.length - 1,
         );
         let secondWrongAnswerIndex = firstWrongAnswerIndex + 1;
         if (secondWrongAnswerIndex >= possibleWrongAnswers.length) {
@@ -119,7 +117,7 @@ export default async function Page({
       }, []);
 
       return [...a, ...currentQuizQuestions];
-    }, [])
+    }, []),
   );
 
   if (!questionCountParam) {
@@ -136,7 +134,7 @@ export default async function Page({
   const extendedQuestions = Array.from(Array(multiplyFactor).keys()).flatMap(
     () => {
       return questions;
-    }
+    },
   );
   extendedQuestions.length = questionCount;
 

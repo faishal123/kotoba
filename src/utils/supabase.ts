@@ -1,109 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { ParticleToUploadType } from "@/models/particle";
+import { QuestionToUploadType, SupabaseQuestionType } from "@/models/question";
+import { QuizToUploadType } from "@/models/quiz";
+import { SentenceToUploadType } from "@/models/sentence";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.SUPABASE_URL || "";
 const supabaseKey = process.env.SUPABASE_API_KEY || "";
 export const supabase = createClient(supabaseUrl, supabaseKey);
-
-export type SupabaseParticleType = {
-  id: string;
-  created_at?: string;
-  japanese: string;
-  romaji: string;
-  english?: string;
-};
-
-export interface WordComponent {
-  kanji: string;
-  furigana?: string;
-  romaji: string;
-  english?: string;
-}
-
-export interface SentenceWord {
-  romaji: string;
-  english: string;
-  furigana?: string;
-  japanese: string;
-  components?: WordComponent[];
-}
-
-export type SentenceJSON = SentenceWord[];
-export type PartialSentenceJSON = Partial<SentenceWord>[];
-
-export type SupabaseSentenceType = {
-  id: string;
-  created_at?: string;
-  sentence_json: SentenceJSON;
-  english: string;
-  sentence: string;
-};
-
-export type SentenceToEditType = Omit<SupabaseSentenceType, "created_at">;
-export type SentenceToUploadType = Omit<
-  SupabaseSentenceType,
-  "created_at" | "id"
->;
-
-export type SupabaseQuestionType = {
-  id: string;
-  created_at: string;
-  romaji: string;
-  furigana: string;
-  kanji: string;
-  meaning: string[];
-  quiz_id: string;
-  "kotoba-quiz-list"?: {
-    quiz_name: string;
-  };
-};
-
-export type SupabaseQuizType = {
-  id: string;
-  created_at: string;
-  description: string;
-  quiz_name: string;
-};
-
-export type SupabaseAvailableQuizViewType = {
-  id: string;
-  created_at: string;
-  description: string;
-  quiz_name: string;
-  question_count: number;
-};
-
-export type BaseQuestionType = {
-  romaji: string;
-  furigana: string;
-  kanji: string;
-  meaning: string[];
-};
-
-export interface QuestionToUploadType extends BaseQuestionType {
-  quiz_id: string;
-}
-
-export interface QuestionToEditType extends QuestionToUploadType {
-  question_id: string;
-}
-
-export type QuizToUploadType = {
-  quiz_name: string;
-  description: string;
-};
-
-export type ParticleToUploadType = Omit<
-  SupabaseParticleType,
-  "created_at" | "id"
->;
-
-export type ParticleToEditType = Omit<SupabaseParticleType, "created_at">;
-
-export interface QuizToEditType extends QuizToUploadType {
-  quiz_id: string;
-}
 
 export type GetAllDataFunctionType = <T>(
   table: string,

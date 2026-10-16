@@ -9,11 +9,11 @@ interface StringSchemaOptions {
 
 export function createStringZodSchema(param: {
   required: true;
-  [key: string]: any;
+  [key: string]: unknown;
 }): z.ZodType<string>;
 export function createStringZodSchema(param?: {
   required?: false;
-  [key: string]: any;
+  [key: string]: unknown;
 }): z.ZodOptional<z.ZodNullable<z.ZodType<string>>>;
 
 export function createStringZodSchema(param?: StringSchemaOptions) {

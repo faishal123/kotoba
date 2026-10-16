@@ -4,10 +4,12 @@ import {
   editData,
   getAllData,
   insertNewData,
+} from "@/utils/supabase";
+import {
   ParticleToEditType,
   ParticleToUploadType,
   SupabaseParticleType,
-} from "@/utils/supabase";
+} from "@/models/particle";
 import { NextRequest } from "next/server";
 
 const validateParticle = async (

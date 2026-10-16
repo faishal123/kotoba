@@ -1,6 +1,6 @@
 "use client";
 
-import { SupabaseAvailableQuizViewType } from "@/utils/supabase";
+import { SupabaseAvailableQuizViewType } from "@/models/availableQuiz";
 import { Card } from "@/components/Atoms/Card/Card";
 import { CheckIcon } from "lucide-react";
 import { useState } from "react";
@@ -25,7 +25,7 @@ export const MixQuizSelector = ({
             onClick={() => {
               if (isSelected) {
                 setSelectedQuiz((prev) =>
-                  prev.filter((p) => p !== quiz.quiz_name)
+                  prev.filter((p) => p !== quiz.quiz_name),
                 );
               } else {
                 setSelectedQuiz((prev) => [...prev, quiz.quiz_name]);
@@ -42,7 +42,9 @@ export const MixQuizSelector = ({
               </div>
             )}
             <div>
-              <div className="text-foreground text-lg font-bold">{quiz.quiz_name}</div>
+              <div className="text-foreground text-lg font-bold">
+                {quiz.quiz_name}
+              </div>
               <div className="text-foreground text-lg">
                 {quiz.description} ({quiz.question_count} Unique Questions)
               </div>

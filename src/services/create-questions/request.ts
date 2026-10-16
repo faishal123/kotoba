@@ -1,4 +1,4 @@
-import { QuestionToUploadType } from "@/utils/supabase";
+import { QuestionToUploadType } from "@/models/question";
 
 export const createQuestions = async (questions: QuestionToUploadType[]) => {
   const res = await fetch("/api/questions", {

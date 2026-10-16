@@ -1,6 +1,6 @@
 import { MutationFunctionContext, useMutation } from "@tanstack/react-query";
 import { editSentence } from "./request";
-import { SentenceToEditType } from "@/utils/supabase";
+import { SentenceToEditType } from "@/models/sentence";
 
 export const useEditSentence = (params?: {
   onSuccess?:

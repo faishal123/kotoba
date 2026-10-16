@@ -1,4 +1,4 @@
-import { SupabaseAvailableQuizViewType } from "@/utils/supabase";
+import { SupabaseAvailableQuizViewType } from "@/models/availableQuiz";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAvailableQuizList } from "./request";
 

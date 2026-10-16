@@ -1,6 +1,6 @@
 import { MutationFunctionContext, useMutation } from "@tanstack/react-query";
 import { createSentence } from "./request";
-import { SentenceToUploadType } from "@/utils/supabase";
+import { SentenceToUploadType } from "@/models/sentence";
 
 export const useCreateSentence = (params?: {
   onSuccess?:

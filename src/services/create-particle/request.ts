@@ -1,4 +1,4 @@
-import { ParticleToUploadType } from "@/utils/supabase";
+import { ParticleToUploadType } from "@/models/particle";
 
 export const createParticle = async (particle: ParticleToUploadType) => {
   const res = await fetch("/api/particles", {

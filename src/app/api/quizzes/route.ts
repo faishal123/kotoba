@@ -3,10 +3,12 @@ import {
   editData,
   getAllData,
   insertNewData,
+} from "@/utils/supabase";
+import {
   QuizToEditType,
   QuizToUploadType,
   SupabaseQuizType,
-} from "@/utils/supabase";
+} from "@/models/quiz";
 import { NextRequest } from "next/server";
 
 export async function GET() {
@@ -25,7 +27,7 @@ export async function PUT(request: Request) {
       { message: "Please insert valid data" },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -37,7 +39,7 @@ export async function PUT(request: Request) {
       {
         by: "quiz_name",
         value: quizToEdit?.quiz_name,
-      }
+      },
     )) as SupabaseQuizType[] | null;
 
     if (
@@ -46,7 +48,7 @@ export async function PUT(request: Request) {
     ) {
       return Response.json(
         { message: "That quiz name is already taken" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     await editData({
@@ -65,7 +67,7 @@ export async function PUT(request: Request) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 
@@ -83,7 +85,7 @@ export async function POST(request: Request) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -95,13 +97,13 @@ export async function POST(request: Request) {
       {
         by: "quiz_name",
         value: quizToInsert?.quiz_name,
-      }
+      },
     )) as SupabaseQuizType[] | null;
 
     if ((quizWithTheSameName || []).length > 0) {
       return Response.json(
         { message: "The quiz you want to insert already exist" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -114,7 +116,7 @@ export async function POST(request: Request) {
       { message: "Error inserting data", error },
       {
         status: 500,
-      }
+      },
     );
   }
 
@@ -124,7 +126,7 @@ export async function POST(request: Request) {
     },
     {
       status: 200,
-    }
+    },
   );
 }
 
@@ -137,7 +139,7 @@ export async function DELETE(request: NextRequest) {
       { message: "Please provide the id of the quiz that you want to delete" },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -148,7 +150,7 @@ export async function DELETE(request: NextRequest) {
       { message: "Error deleting data", error },
       {
         status: 500,
-      }
+      },
     );
   }
 
@@ -156,6 +158,6 @@ export async function DELETE(request: NextRequest) {
     { message: "Success" },
     {
       status: 200,
-    }
+    },
   );
 }

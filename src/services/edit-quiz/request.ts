@@ -1,4 +1,4 @@
-import { QuizToEditType } from "@/utils/supabase";
+import { QuizToEditType } from "@/models/quiz";
 
 export const editQuiz = async (quiz: QuizToEditType) => {
   const res = await fetch("/api/quizzes", {

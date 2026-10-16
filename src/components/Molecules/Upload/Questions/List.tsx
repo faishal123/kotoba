@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { SupabaseQuizType, SupabaseQuestionType } from "@/utils/supabase";
+import { SupabaseQuestionType } from "@/models/question";
+import { SupabaseQuizType } from "@/models/quiz";
 import { FetchFunctionType } from "@/app/upload/clientPage";
 import { SingleQuestionDialog, SingleQuestionRow } from "./Single";
 import { SelectComponent } from "@/components/Atoms/Select/Select";

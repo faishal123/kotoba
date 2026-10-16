@@ -1,4 +1,4 @@
-import { SentenceToUploadType } from "@/utils/supabase";
+import { SentenceToUploadType } from "@/models/sentence";
 
 export const createSentence = async (sentence: SentenceToUploadType) => {
   const res = await fetch("/api/sentences", {

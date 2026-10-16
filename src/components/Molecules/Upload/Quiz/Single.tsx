@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { SupabaseQuizType } from "@/utils/supabase";
+import { SupabaseQuizType } from "@/models/quiz";
 import { toast } from "react-toastify";
 import { FetchFunctionType } from "@/app/upload/clientPage";
 import { z } from "zod";
@@ -21,6 +21,9 @@ const formSchema = z.object({
 
 type FormType = z.infer<typeof formSchema>;
 
+type FormInputType = z.input<typeof formSchema>;
+type FormOutputType = z.output<typeof formSchema>;
+
 export const SingleQuizDisplay = ({
   quiz,
   type,
@@ -36,7 +39,7 @@ export const SingleQuizDisplay = ({
       type: "create";
       refetchData: FetchFunctionType;
     }) => {
-  const form = useForm<FormType>({
+  const form = useForm<FormInputType, unknown, FormOutputType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       quiz_name: quiz?.quiz_name || "",

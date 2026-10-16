@@ -48,6 +48,7 @@ export const SentenceClientPage = () => {
                   </tr>
                   {sentences?.map((sentence) => (
                     <SingleSentenceRow
+                      key={sentence.id}
                       refetchData={refetch}
                       sentence={sentence}
                     />

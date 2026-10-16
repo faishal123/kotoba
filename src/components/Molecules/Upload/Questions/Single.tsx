@@ -1,7 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { SupabaseQuestionType, SupabaseQuizType } from "@/utils/supabase";
+import { SupabaseQuizType } from "@/models/quiz";
+import { SupabaseQuestionType } from "@/models/question";
 import { ReactNode } from "react";
 import { PencilIcon, TrashIcon } from "lucide-react";
 import { FetchFunctionType } from "@/app/upload/clientPage";
@@ -30,6 +31,9 @@ const formSchema = z.object({
 
 type FormType = z.infer<typeof formSchema>;
 
+type FormInputType = z.input<typeof formSchema>;
+type FormOutputType = z.output<typeof formSchema>;
+
 export const SingleQuestionDialog = ({
   question,
   allQuizzes,
@@ -51,7 +55,7 @@ export const SingleQuestionDialog = ({
       trigger?: ReactNode;
       refetchData: FetchFunctionType;
     }) => {
-  const form = useForm<FormType>({
+  const form = useForm<FormInputType, unknown, FormOutputType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       kanji: question?.kanji,
