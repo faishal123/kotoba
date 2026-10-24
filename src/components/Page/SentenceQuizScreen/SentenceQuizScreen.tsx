@@ -17,7 +17,7 @@ interface JSONsType extends SentenceWord {
 }
 
 export const SentenceQuizScreen = () => {
-  const { data } = useGetSentences();
+  const { data, isPending } = useGetSentences();
   const questions = data?.map((d) => {
     const { jsonsWithKanjiIndicator, kanjiOnly } = d?.sentence_json?.reduce<{
       jsonsWithKanjiIndicator: JSONsType[];
@@ -159,14 +159,16 @@ export const SentenceQuizScreen = () => {
             if (i === randomKanji?.indexInSentence) {
               return (
                 <span
-                  key={JSON.stringify(json)}
+                  key={JSON.stringify(json || {})}
                   className="text-primary border-b-10 border-primary"
                 >
                   {json.japanese}
                 </span>
               );
             }
-            return <span key={JSON.stringify(json)}>{json.japanese}</span>;
+            return (
+              <span key={JSON.stringify(json || {})}>{json.japanese}</span>
+            );
           })}
         </div>
       ),
@@ -176,18 +178,16 @@ export const SentenceQuizScreen = () => {
     return question;
   });
 
-  if (!questions) {
-    return <Spinner />;
-  }
   return (
     <QuizScreen
+      isLoading={!questions || isPending}
       questionClassName="text-5xl xs:text-8xl"
       answerClassName="text-xl xs:text-3xl"
       answersContainerClassName="flex-col xs:flex-row"
       containerClassName="pt-[168px] pb-[140px] xs:pt-0 xs:pb-0"
       homeUrl="/kanji"
       levelName={`Sentence`}
-      questions={questions}
+      questions={questions || []}
     />
   );
 };

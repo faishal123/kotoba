@@ -10,6 +10,7 @@ import { Card } from "@/components/Atoms/Card/Card";
 import { useQuizSound } from "@/utils/sound";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 export const QuizScreen = ({
   questions,
@@ -21,6 +22,7 @@ export const QuizScreen = ({
   containerClassName,
   answerMethod = "multiple-choice",
   answerInputProps = {},
+  isLoading,
 }: {
   questions: QuestionType[];
   levelName: string;
@@ -31,6 +33,7 @@ export const QuizScreen = ({
   containerClassName?: string;
   answerMethod?: "multiple-choice" | "input";
   answerInputProps?: React.ComponentProps<"input">;
+  isLoading?: boolean;
 }) => {
   const [state, setState] = useState<{
     correct: number;
@@ -90,17 +93,17 @@ export const QuizScreen = ({
     const answerInputElement = findAnswerInputElement();
     if (answerInputElement) {
       const correctAnswerIndex = currentQuestion.answers.findIndex(
-        (a) => a.isCorrect
+        (a) => a.isCorrect,
       );
       const correctAnswerObject = currentQuestion.answers.find(
-        (a) => a.isCorrect
+        (a) => a.isCorrect,
       );
       const correctAnswer = correctAnswerObject?.answer;
       const answerValue = answerInputElement.value.trim();
       const isAnswerCorrect = answerValue === correctAnswer;
       onClickAnswer(
         { answer: answerValue, isCorrect: isAnswerCorrect },
-        isAnswerCorrect ? correctAnswerIndex : correctAnswerIndex + 1
+        isAnswerCorrect ? correctAnswerIndex : correctAnswerIndex + 1,
       );
     }
   };
@@ -133,7 +136,6 @@ export const QuizScreen = ({
         }
       } else {
         const continueButtonElement = findContinueButtonElement();
-        console.log("run", continueButtonElement);
         if (continueButtonElement) {
           continueButtonElement.focus();
         }
@@ -143,81 +145,89 @@ export const QuizScreen = ({
 
   return (
     <div className={cn(["relative transition-all flex flex-col h-[100svh]"])}>
-      <QuizProgressBar
-        totalQuestions={questions.length}
-        currentQuestionIndex={currentQuestionIndex}
-      />
-      <ScoreScreen
-        homeUrl={homeUrl}
-        levelName={levelName}
-        correct={correct}
-        totalQuestions={questions.length}
-        show={!currentQuestion}
-      />
-      {currentQuestion && (
-        <div
-          className={cn([
-            "flex-1 flex flex-col gap-10 items-center justify-center",
-            containerClassName,
-          ])}
-        >
-          <Card
-            className={cn([
-              "min-w-[195px] min-h-[230px] p-5 flex items-center justify-center text-8xl font-bold text-foreground",
-              questionClassName,
-            ])}
-          >
-            {currentQuestion?.question}
-          </Card>
-          <div className={cn(["flex gap-5", answersContainerClassName])}>
-            {answerMethod === "multiple-choice" &&
-              currentQuestion?.answers.map((answer, i) => {
-                return (
-                  <CardButton
-                    className={cn(["px-2 text-center", answerClassName])}
-                    variant={
-                      currentQuestionAnswered && i === chosenAnswerIndex
-                        ? answer.isCorrect
-                          ? "correct"
-                          : "wrong"
-                        : "default"
-                    }
-                    onClick={
-                      currentQuestionAnswered
-                        ? undefined
-                        : () => {
-                            onClickAnswer(answer, i);
-                          }
-                    }
-                    key={`${currentQuestionIndex} ${answer.answer}`}
-                  >
-                    {answer.answer?.toUpperCase()}
-                  </CardButton>
-                );
-              })}
-            {answerMethod === "input" && (
-              <div className="flex gap-2">
-                <Input
-                  disabled={currentQuestionAnswered}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      onInputAnswer();
-                    }
-                  }}
-                  autoFocus
-                  id="answerInput"
-                  {...answerInputProps}
-                />
-                <Button
-                  disabled={currentQuestionAnswered}
-                  onClick={onInputAnswer}
-                >
-                  Submit
-                </Button>
-              </div>
-            )}
-          </div>
+      {isLoading ? (
+        <div className="w-full h-full flex items-center justify-center">
+          <Spinner className="size-15 text-primary" />
         </div>
+      ) : (
+        <>
+          <QuizProgressBar
+            totalQuestions={questions.length}
+            currentQuestionIndex={currentQuestionIndex}
+          />
+          <ScoreScreen
+            homeUrl={homeUrl}
+            levelName={levelName}
+            correct={correct}
+            totalQuestions={questions.length}
+            show={!currentQuestion}
+          />
+          {currentQuestion && (
+            <div
+              className={cn([
+                "flex-1 flex flex-col gap-10 items-center justify-center",
+                containerClassName,
+              ])}
+            >
+              <Card
+                className={cn([
+                  "min-w-[195px] min-h-[230px] p-5 flex items-center justify-center text-8xl font-bold text-foreground",
+                  questionClassName,
+                ])}
+              >
+                {currentQuestion?.question}
+              </Card>
+              <div className={cn(["flex gap-5", answersContainerClassName])}>
+                {answerMethod === "multiple-choice" &&
+                  currentQuestion?.answers.map((answer, i) => {
+                    return (
+                      <CardButton
+                        className={cn(["px-2 text-center", answerClassName])}
+                        variant={
+                          currentQuestionAnswered && i === chosenAnswerIndex
+                            ? answer.isCorrect
+                              ? "correct"
+                              : "wrong"
+                            : "default"
+                        }
+                        onClick={
+                          currentQuestionAnswered
+                            ? undefined
+                            : () => {
+                                onClickAnswer(answer, i);
+                              }
+                        }
+                        key={`${currentQuestionIndex} ${answer.answer}`}
+                      >
+                        {answer.answer?.toUpperCase()}
+                      </CardButton>
+                    );
+                  })}
+                {answerMethod === "input" && (
+                  <div className="flex gap-2">
+                    <Input
+                      disabled={currentQuestionAnswered}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          onInputAnswer();
+                        }
+                      }}
+                      autoFocus
+                      id="answerInput"
+                      {...answerInputProps}
+                    />
+                    <Button
+                      disabled={currentQuestionAnswered}
+                      onClick={onInputAnswer}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </>
       )}
       <QuizFooter
         show={currentQuestionAnswered}
