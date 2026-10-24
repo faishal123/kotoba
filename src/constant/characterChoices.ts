@@ -37,4 +37,10 @@ export const characterChoices = [
     character: "仕事",
     description: "Practice Japanese occupation vocabulary.",
   },
+  {
+    href: "/quiz/sentence",
+    label: "Sentence",
+    character: "文章",
+    description: "Learn more about sentences",
+  },
 ];

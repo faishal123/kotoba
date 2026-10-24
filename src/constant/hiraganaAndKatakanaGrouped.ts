@@ -253,7 +253,7 @@ export const waGroup = {
   hiragana: { わ: "wa", を: "wo" },
 };
 
-export const hiraganaGrouped = {
+export const hiraganaGrouped: Record<string, Record<string, string>> = {
   aGroup: aGroup.hiragana,
   kaGroup: kaGroup.hiragana,
   saGroup: saGroup.hiragana,
@@ -265,6 +265,45 @@ export const hiraganaGrouped = {
   raGroup: raGroup.hiragana,
   waGroup: waGroup.hiragana,
 };
+
+const hiraganaGroups = Object.keys(hiraganaGrouped);
+
+export const hiraganaWithGroup = Object.values(hiraganaGrouped).reduce<
+  Record<
+    string,
+    {
+      group: string;
+      character: string;
+      romaji: string;
+    }
+  >
+>((a, c, i) => {
+  const groupName = hiraganaGroups?.[i];
+  const current: Record<string, string> = c;
+  const currentKeys = Object.keys(current);
+
+  const hiraganaCharsWithGroup = currentKeys?.reduce<
+    Record<
+      string,
+      {
+        group: string;
+        character: string;
+        romaji: string;
+      }
+    >
+  >((a2, c2) => {
+    return {
+      ...a2,
+      [c2]: {
+        group: groupName,
+        character: c2,
+        romaji: current?.[c2],
+      },
+    };
+  }, {});
+
+  return { ...a, ...hiraganaCharsWithGroup };
+}, {});
 
 export const katakanaGrouped = {
   aGroup: aGroup.katakana,

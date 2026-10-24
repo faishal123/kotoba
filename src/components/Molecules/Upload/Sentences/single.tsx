@@ -100,11 +100,6 @@ export const SingleSentenceDialog = ({
       toast("All fields are required", { type: "error" });
       return;
     }
-    console.log({
-      english: data?.english,
-      sentence_json: data?.sentence_json,
-      sentence: sentenceJapanese,
-    });
     if (isEdit) {
       await editSentence({
         id: defaultValues?.id || "",
@@ -159,7 +154,7 @@ export const SingleSentenceDialog = ({
           <SentenceInputRenderer
             control={form.control}
             name="sentence_json"
-            defaultSentence={exampleJson}
+            defaultSentence={defaultValues?.sentence_json}
             setValue={(value) => {
               form.setValue("sentence_json", value);
             }}
