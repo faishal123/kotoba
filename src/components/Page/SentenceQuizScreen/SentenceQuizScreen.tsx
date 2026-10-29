@@ -9,7 +9,6 @@ import { SentenceWord } from "@/models/sentence";
 import { useGetSentences } from "@/services/get-sentences/useGetSentences";
 import { generateRandomNumber, randomizeArray } from "@/utils/serverUtils";
 import { QuizScreen } from "../QuizScreen/QuizScreen";
-import { Spinner } from "@/components/ui/spinner";
 
 interface JSONsType extends SentenceWord {
   isKanji: boolean;
